@@ -11,9 +11,11 @@ import { calculateLoan, LoanType, LoanSummary } from '../utils/loanCalculations'
 import ResultsTabs from './ResultsTabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const LoanCalculator: React.FC = () => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   
   const [loanAmount, setLoanAmount] = useState<number>(300000);
   const [interestRate, setInterestRate] = useState<number>(5.5);
@@ -133,10 +135,10 @@ const LoanCalculator: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="card-gradient p-8 rounded-2xl shadow-lg animate-fade-in mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-6">
+    <div className="w-full max-w-4xl mx-auto px-4">
+      <div className="card-gradient p-4 sm:p-8 rounded-2xl shadow-lg animate-fade-in mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8">
+          <div className="space-y-5">
             <div className="space-y-3">
               <Label htmlFor="loanAmount" className="text-base font-medium flex items-center gap-1">
                 Loan Amount
@@ -189,7 +191,7 @@ const LoanCalculator: React.FC = () => {
             </div>
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-5">
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <Label htmlFor="loanTerm" className="text-base font-medium flex items-center gap-1">
@@ -268,12 +270,12 @@ const LoanCalculator: React.FC = () => {
           </div>
         </div>
         
-        <div className="flex justify-center mt-8 space-x-4">
+        <div className="flex flex-col sm:flex-row justify-center mt-6 sm:mt-8 gap-3 sm:space-x-4">
           <Button 
             onClick={resetCalculator}
             variant="outline"
-            size="lg"
-            className="flex items-center gap-2 font-medium hover:bg-gray-100/70"
+            size={isMobile ? "default" : "lg"}
+            className="flex items-center gap-2 font-medium hover:bg-gray-100/70 w-full sm:w-auto"
           >
             <RefreshCwIcon className="h-5 w-5" />
             Reset
@@ -283,8 +285,8 @@ const LoanCalculator: React.FC = () => {
             onClick={calculateResults}
             disabled={isCalculating}
             variant="gradient"
-            size="lg"
-            className="flex items-center gap-2 font-medium"
+            size={isMobile ? "default" : "lg"}
+            className="flex items-center gap-2 font-medium w-full sm:w-auto"
           >
             <CalculatorIcon className="h-5 w-5" />
             {isCalculating ? 'Calculating...' : 'Calculate'}

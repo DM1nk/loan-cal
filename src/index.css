@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -54,6 +55,35 @@
 
   .tab-transition {
     @apply transition-all duration-300 ease-out;
+  }
+  
+  /* Additional mobile-friendly styles */
+  @media (max-width: 640px) {
+    .card-gradient {
+      @apply p-4 rounded-xl;
+    }
+    
+    input, select, button {
+      @apply text-base;
+    }
+    
+    h1 {
+      @apply text-3xl;
+    }
+    
+    h2 {
+      @apply text-xl;
+    }
+    
+    /* Increased hit targets for mobile */
+    button, a {
+      @apply min-h-10 touch-none;
+    }
+    
+    /* Better spacing for mobile forms */
+    .form-group {
+      @apply mb-4;
+    }
   }
 }
 
@@ -163,4 +193,36 @@ select:focus-visible,
 button:focus-visible {
   outline: 2px solid rgba(59, 130, 246, 0.5);
   outline-offset: 2px;
+}
+
+/* Mobile enhancements */
+@media (max-width: 640px) {
+  .card-gradient {
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+  
+  /* Improve tap targets */
+  button, a, .tabs-trigger {
+    min-height: 44px;
+  }
+  
+  /* Make sure tables are responsive on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  /* Reduce motion for better performance */
+  .animate-float {
+    animation: none;
+  }
+  
+  /* Better form control on mobile */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important; /* Prevents iOS zoom */
+  }
 }
