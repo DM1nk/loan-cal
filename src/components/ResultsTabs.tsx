@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoanSummary, formatCurrency } from '../utils/loanCalculations';
 import PaymentChart from './PaymentChart';
 import PaymentTable from './PaymentTable';
-import { ChartBarIcon, TableIcon, InfoIcon, BarChart3Icon, CircleDollarSignIcon, BankIcon } from 'lucide-react';
+import { ChartBarIcon, TableIcon, InfoIcon, BarChart3Icon, CircleDollarSignIcon, Building2Icon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 
@@ -44,7 +43,7 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({ loanResults }) => {
         
         <div className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center">
           <div className="mb-2">
-            <BankIcon className="h-10 w-10 text-primary/80 mb-1" />
+            <Building2Icon className="h-10 w-10 text-primary/80 mb-1" />
           </div>
           <div className="flex items-center gap-1">
             <h3 className="text-sm font-medium text-gray-500 mb-1">Total Payment</h3>
