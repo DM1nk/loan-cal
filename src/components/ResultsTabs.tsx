@@ -21,7 +21,7 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
       <h2 className="text-2xl font-bold text-center mb-6">Loan Analysis</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center">
+        <div className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center hover:shadow-md transition-all duration-200">
           <div className="mb-2">
             <Building2Icon className="h-10 w-10 text-primary/80 mb-1" />
           </div>
@@ -29,7 +29,7 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
           <p className="text-3xl font-bold text-primary">{formatCurrency(loanResults.totalPayment)}</p>
         </div>
         
-        <div className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center">
+        <div className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center hover:shadow-md transition-all duration-200">
           <div className="mb-2">
             <BarChart3Icon className="h-10 w-10 text-primary/80 mb-1" />
           </div>
@@ -39,12 +39,12 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
       </div>
       
       <Tabs defaultValue="chart" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-6">
-          <TabsTrigger value="chart" className="flex items-center gap-2 text-base p-6">
+        <TabsList className="grid w-full grid-cols-2 mb-6 p-1 bg-muted/50 backdrop-blur-sm rounded-xl">
+          <TabsTrigger value="chart" className="flex items-center gap-2 text-base p-4 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200">
             <ChartBarIcon className="w-5 h-5" />
             <span>Payment Charts</span>
           </TabsTrigger>
-          <TabsTrigger value="table" className="flex items-center gap-2 text-base p-6">
+          <TabsTrigger value="table" className="flex items-center gap-2 text-base p-4 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200">
             <TableIcon className="w-5 h-5" />
             <span>Payment Schedule</span>
           </TabsTrigger>

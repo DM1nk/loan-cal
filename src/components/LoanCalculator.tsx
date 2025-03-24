@@ -272,7 +272,8 @@ const LoanCalculator: React.FC = () => {
           <Button 
             onClick={resetCalculator}
             variant="outline"
-            className="flex items-center gap-2 h-12 px-6 text-base font-medium"
+            size="lg"
+            className="flex items-center gap-2 font-medium hover:bg-gray-100/70"
           >
             <RefreshCwIcon className="h-5 w-5" />
             Reset
@@ -281,7 +282,9 @@ const LoanCalculator: React.FC = () => {
           <Button 
             onClick={calculateResults}
             disabled={isCalculating}
-            className="flex items-center gap-2 h-12 px-8 text-base font-medium bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
+            variant="gradient"
+            size="lg"
+            className="flex items-center gap-2 font-medium"
           >
             <CalculatorIcon className="h-5 w-5" />
             {isCalculating ? 'Calculating...' : 'Calculate'}
