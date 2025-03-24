@@ -17,7 +17,7 @@ const LoanCalculator: React.FC = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   
-  const [loanAmount, setLoanAmount] = useState<number>(300000);
+  const [loanAmount, setLoanAmount] = useState<number>(300000000);
   const [interestRate, setInterestRate] = useState<number>(5.5);
   const [loanTermMonths, setLoanTermMonths] = useState<number>(360); // Store term in months
   const [loanType, setLoanType] = useState<LoanType>('evenDistribution');
@@ -60,8 +60,8 @@ const LoanCalculator: React.FC = () => {
     // Validate inputs
     if (loanAmount <= 0) {
       toast({
-        title: "Invalid loan amount",
-        description: "Please enter a valid loan amount greater than zero.",
+        title: "Số tiền vay không hợp lệ",
+        description: "Vui lòng nhập số tiền vay hợp lệ lớn hơn không.",
         variant: "destructive"
       });
       return;
@@ -69,8 +69,8 @@ const LoanCalculator: React.FC = () => {
     
     if (interestRate < 0) {
       toast({
-        title: "Invalid interest rate",
-        description: "Interest rate cannot be negative.",
+        title: "Lãi suất không hợp lệ",
+        description: "Lãi suất không thể là số âm.",
         variant: "destructive"
       });
       return;
@@ -78,8 +78,8 @@ const LoanCalculator: React.FC = () => {
     
     if (loanTermMonths <= 0) {
       toast({
-        title: "Invalid loan term",
-        description: "Please select a loan term greater than zero.",
+        title: "Thời hạn vay không hợp lệ",
+        description: "Vui lòng chọn thời hạn vay lớn hơn không.",
         variant: "destructive"
       });
       return;
@@ -94,14 +94,14 @@ const LoanCalculator: React.FC = () => {
         setResults(calculatedResults);
         
         toast({
-          title: "Calculation complete",
-          description: "Your loan calculation has been updated.",
+          title: "Tính toán hoàn tất",
+          description: "Kết quả tính toán khoản vay của bạn đã được cập nhật.",
         });
       } catch (error) {
         console.error("Calculation error:", error);
         toast({
-          title: "Calculation error",
-          description: "An error occurred while calculating your loan.",
+          title: "Lỗi tính toán",
+          description: "Đã xảy ra lỗi khi tính toán khoản vay của bạn.",
           variant: "destructive"
         });
       } finally {
@@ -112,15 +112,15 @@ const LoanCalculator: React.FC = () => {
   
   // Reset all inputs
   const resetCalculator = () => {
-    setLoanAmount(300000);
+    setLoanAmount(300000000);
     setInterestRate(5.5);
     setLoanTermMonths(360); // 30 years in months
     setLoanType('evenDistribution');
     setResults(null);
     
     toast({
-      title: "Calculator reset",
-      description: "All values have been reset to defaults.",
+      title: "Đặt lại máy tính",
+      description: "Tất cả các giá trị đã được đặt lại về mặc định.",
     });
   };
   
@@ -129,9 +129,9 @@ const LoanCalculator: React.FC = () => {
 
   // Loan type descriptions for tooltips
   const loanTypeDescriptions = {
-    evenDistribution: "Equal monthly payments throughout the loan term (traditional amortization).",
-    fixedPrincipal: "Principal payment stays the same, total payment decreases over time.",
-    fixedInterest: "Interest payment stays the same, total payment remains constant."
+    evenDistribution: "Khoản thanh toán hàng tháng bằng nhau trong suốt thời hạn vay (trả góp truyền thống).",
+    fixedPrincipal: "Khoản thanh toán gốc giữ nguyên, tổng khoản thanh toán giảm dần theo thời gian.",
+    fixedInterest: "Khoản thanh toán lãi giữ nguyên, tổng khoản thanh toán không đổi."
   };
   
   return (
@@ -145,16 +145,16 @@ const LoanCalculator: React.FC = () => {
                 {/* Loan Type Selection - Now at the top */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-1">
-                    <Label htmlFor="loanType" className="text-sm font-medium">Loan Type</Label>
+                    <Label htmlFor="loanType" className="text-sm font-medium">Loại Khoản Vay</Label>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <InfoIcon className="h-3 w-3 text-muted-foreground cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent side="top" className="max-w-[250px]">
                         <div className="text-xs space-y-1">
-                          <p><strong>Even Distribution:</strong> Equal monthly payments</p>
-                          <p><strong>Fixed Principal:</strong> Same principal amount each month</p>
-                          <p><strong>Fixed Interest:</strong> Same interest amount each month</p>
+                          <p><strong>Phân bổ đều:</strong> Khoản thanh toán hàng tháng bằng nhau</p>
+                          <p><strong>Gốc cố định:</strong> Khoản gốc giữ nguyên mỗi tháng</p>
+                          <p><strong>Lãi cố định:</strong> Khoản lãi giữ nguyên mỗi tháng</p>
                         </div>
                       </TooltipContent>
                     </Tooltip>
@@ -165,25 +165,25 @@ const LoanCalculator: React.FC = () => {
                     onValueChange={handleLoanTypeChange}
                   >
                     <SelectTrigger id="loanType" className="h-10">
-                      <SelectValue placeholder="Select loan type" />
+                      <SelectValue placeholder="Chọn loại khoản vay" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="evenDistribution">Even Distribution</SelectItem>
-                      <SelectItem value="fixedPrincipal">Fixed Principal</SelectItem>
-                      <SelectItem value="fixedInterest">Fixed Interest</SelectItem>
+                      <SelectItem value="evenDistribution">Phân Bổ Đều</SelectItem>
+                      <SelectItem value="fixedPrincipal">Gốc Cố Định</SelectItem>
+                      <SelectItem value="fixedInterest">Lãi Cố Định</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="loanAmount" className="text-sm font-medium flex items-center gap-1">
-                    Loan Amount
+                    Số Tiền Vay
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <InfoIcon className="h-3 w-3 text-muted-foreground cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent side="top">
-                        <p className="text-xs">The total amount you wish to borrow</p>
+                        <p className="text-xs">Tổng số tiền bạn muốn vay</p>
                       </TooltipContent>
                     </Tooltip>
                   </Label>
@@ -201,13 +201,13 @@ const LoanCalculator: React.FC = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="interestRate" className="text-sm font-medium flex items-center gap-1">
-                    Interest Rate (%)
+                    Lãi Suất (%)
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <InfoIcon className="h-3 w-3 text-muted-foreground cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent side="top">
-                        <p className="text-xs">Annual interest rate for this loan</p>
+                        <p className="text-xs">Lãi suất hàng năm cho khoản vay này</p>
                       </TooltipContent>
                     </Tooltip>
                   </Label>
@@ -238,17 +238,17 @@ const LoanCalculator: React.FC = () => {
               {/* Loan Type Selection - Now at the top outside the two-column layout */}
               <div className="space-y-3 mb-2">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor="loanType" className="text-base font-medium">Loan Type</Label>
+                  <Label htmlFor="loanType" className="text-base font-medium">Loại Khoản Vay</Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs p-4">
-                      <h4 className="font-semibold mb-2">Payment Types:</h4>
+                      <h4 className="font-semibold mb-2">Các Loại Thanh Toán:</h4>
                       <ul className="space-y-2">
-                        <li><strong>Even Distribution:</strong> {loanTypeDescriptions.evenDistribution}</li>
-                        <li><strong>Fixed Principal:</strong> {loanTypeDescriptions.fixedPrincipal}</li>
-                        <li><strong>Fixed Interest:</strong> {loanTypeDescriptions.fixedInterest}</li>
+                        <li><strong>Phân bổ đều:</strong> {loanTypeDescriptions.evenDistribution}</li>
+                        <li><strong>Gốc cố định:</strong> {loanTypeDescriptions.fixedPrincipal}</li>
+                        <li><strong>Lãi cố định:</strong> {loanTypeDescriptions.fixedInterest}</li>
                       </ul>
                     </TooltipContent>
                   </Tooltip>
@@ -259,25 +259,25 @@ const LoanCalculator: React.FC = () => {
                   onValueChange={handleLoanTypeChange}
                 >
                   <SelectTrigger id="loanType" className="h-12 input-transition">
-                    <SelectValue placeholder="Select loan type" />
+                    <SelectValue placeholder="Chọn loại khoản vay" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="evenDistribution">Even Distribution (Equal Payments)</SelectItem>
-                    <SelectItem value="fixedPrincipal">Fixed Principal</SelectItem>
-                    <SelectItem value="fixedInterest">Fixed Interest</SelectItem>
+                    <SelectItem value="evenDistribution">Phân Bổ Đều (Khoản Thanh Toán Bằng Nhau)</SelectItem>
+                    <SelectItem value="fixedPrincipal">Gốc Cố Định</SelectItem>
+                    <SelectItem value="fixedInterest">Lãi Cố Định</SelectItem>
                   </SelectContent>
                 </Select>
                 
                 <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
                   <CollapsibleTrigger asChild>
                     <Button variant="link" size="sm" className="p-0 h-auto text-sm">
-                      {isOpen ? "Hide explanation" : "What's the difference?"}
+                      {isOpen ? "Ẩn giải thích" : "Sự khác biệt là gì?"}
                     </Button>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="mt-2 p-3 bg-muted/30 rounded-md text-sm text-muted-foreground">
-                    <p className="mb-1"><strong>Even Distribution:</strong> The most common type, with equal monthly payments (like most mortgages).</p>
-                    <p className="mb-1"><strong>Fixed Principal:</strong> You pay the same amount toward principal each month, but less interest over time as your balance decreases.</p>
-                    <p><strong>Fixed Interest:</strong> The interest portion stays fixed, resulting in consistent total payments.</p>
+                    <p className="mb-1"><strong>Phân bổ đều:</strong> Loại phổ biến nhất, với khoản thanh toán hàng tháng bằng nhau (như hầu hết các khoản vay mua nhà).</p>
+                    <p className="mb-1"><strong>Gốc cố định:</strong> Bạn trả cùng một khoản tiền gốc mỗi tháng, nhưng ít lãi hơn theo thời gian khi số dư giảm dần.</p>
+                    <p><strong>Lãi cố định:</strong> Phần lãi giữ nguyên, dẫn đến tổng khoản thanh toán ổn định.</p>
                   </CollapsibleContent>
                 </Collapsible>
               </div>
@@ -287,13 +287,13 @@ const LoanCalculator: React.FC = () => {
                 <div className="space-y-5">
                   <div className="space-y-3">
                     <Label htmlFor="loanAmount" className="text-base font-medium flex items-center gap-1">
-                      Loan Amount
+                      Số Tiền Vay
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>The total amount you wish to borrow</p>
+                          <p>Tổng số tiền bạn muốn vay</p>
                         </TooltipContent>
                       </Tooltip>
                     </Label>
@@ -313,13 +313,13 @@ const LoanCalculator: React.FC = () => {
                 <div className="space-y-5">
                   <div className="space-y-3">
                     <Label htmlFor="interestRate" className="text-base font-medium flex items-center gap-1">
-                      Interest Rate (%)
+                      Lãi Suất (%)
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Annual interest rate for this loan</p>
+                          <p>Lãi suất hàng năm cho khoản vay này</p>
                         </TooltipContent>
                       </Tooltip>
                     </Label>
@@ -359,7 +359,7 @@ const LoanCalculator: React.FC = () => {
             className="flex items-center gap-2 font-medium hover:bg-gray-100/70 w-full sm:w-auto"
           >
             <RefreshCwIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span className="sm:inline">Reset</span>
+            <span className="sm:inline">Đặt Lại</span>
           </Button>
           
           <Button 
@@ -370,7 +370,7 @@ const LoanCalculator: React.FC = () => {
             className="flex items-center gap-2 font-medium w-full sm:w-auto"
           >
             <CalculatorIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-            {isCalculating ? 'Calculating...' : 'Calculate'}
+            {isCalculating ? 'Đang tính...' : 'Tính Toán'}
           </Button>
         </div>
       </div>

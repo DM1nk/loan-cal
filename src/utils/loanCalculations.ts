@@ -130,22 +130,23 @@ export const formatCurrency = (value: number | string, compact: boolean = false)
   const numericValue = typeof value === 'string' ? parseFloat(value) : value;
   
   if (isNaN(numericValue)) {
-    return '$0.00';
+    return '0 ₫';
   }
 
   // For mobile view, use a more compact format for large numbers
-  if (compact && numericValue >= 1000) {
-    return new Intl.NumberFormat('en-US', {
+  if (compact && numericValue >= 1000000) {
+    return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'VND',
       notation: 'compact',
       maximumFractionDigits: 1
     }).format(numericValue);
   }
   
   // Standard format for desktop or smaller numbers
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'VND',
+    maximumFractionDigits: 0
   }).format(numericValue);
 };

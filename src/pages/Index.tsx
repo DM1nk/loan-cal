@@ -11,25 +11,25 @@ const Index = () => {
       <div className="max-w-screen-xl mx-auto">
         <div className="text-center mb-4 sm:mb-12 animate-slide-down">
           <h1 className="text-2xl md:text-5xl font-bold mb-2 sm:mb-4 tracking-tight bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 bg-clip-text text-transparent">
-            Loan Calculator
+            Máy Tính Khoản Vay
           </h1>
           <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Calculate your loan payments with different repayment methods
+            Tính toán khoản thanh toán với các phương pháp trả nợ khác nhau
           </p>
           
           {!isMobile && (
             <div className="flex flex-wrap justify-center gap-2 mt-3 sm:mt-4">
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                Mortgage Loans
+                Vay Mua Nhà
               </span>
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Auto Loans
+                Vay Mua Xe
               </span>
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                Personal Loans
+                Vay Tiêu Dùng
               </span>
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                Student Loans
+                Vay Học Tập
               </span>
             </div>
           )}
@@ -38,8 +38,8 @@ const Index = () => {
         <LoanCalculator />
         
         <div className="mt-4 sm:mt-16 text-center text-xs sm:text-sm text-muted-foreground animate-fade-in">
-          <p className="mb-2">This calculator provides estimates for informational purposes only.</p>
-          <p>Actual loan terms and payments may vary based on lender policies and your financial situation.</p>
+          <p className="mb-2">Máy tính này cung cấp ước tính chỉ mang tính chất tham khảo.</p>
+          <p>Các điều khoản và khoản thanh toán thực tế có thể thay đổi dựa trên chính sách của người cho vay và tình hình tài chính của bạn.</p>
         </div>
       </div>
     </div>
