@@ -142,6 +142,39 @@ const LoanCalculator: React.FC = () => {
             // Mobile layout - single column with compact spacing
             <>
               <div className="space-y-4">
+                {/* Loan Type Selection - Now at the top */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-1">
+                    <Label htmlFor="loanType" className="text-sm font-medium">Loan Type</Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <InfoIcon className="h-3 w-3 text-muted-foreground cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-[250px]">
+                        <div className="text-xs space-y-1">
+                          <p><strong>Even Distribution:</strong> Equal monthly payments</p>
+                          <p><strong>Fixed Principal:</strong> Same principal amount each month</p>
+                          <p><strong>Fixed Interest:</strong> Same interest amount each month</p>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  
+                  <Select
+                    value={loanType}
+                    onValueChange={handleLoanTypeChange}
+                  >
+                    <SelectTrigger id="loanType" className="h-10">
+                      <SelectValue placeholder="Select loan type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="evenDistribution">Even Distribution</SelectItem>
+                      <SelectItem value="fixedPrincipal">Fixed Principal</SelectItem>
+                      <SelectItem value="fixedInterest">Fixed Interest</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="loanAmount" className="text-sm font-medium flex items-center gap-1">
                     Loan Amount
@@ -197,147 +230,122 @@ const LoanCalculator: React.FC = () => {
                   loanTermMonths={loanTermMonths} 
                   onChange={handleLoanTermChange} 
                 />
-                
-                <div className="space-y-2">
-                  <div className="flex items-center gap-1">
-                    <Label htmlFor="loanType" className="text-sm font-medium">Loan Type</Label>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <InfoIcon className="h-3 w-3 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="max-w-[250px]">
-                        <div className="text-xs space-y-1">
-                          <p><strong>Even Distribution:</strong> Equal monthly payments</p>
-                          <p><strong>Fixed Principal:</strong> Same principal amount each month</p>
-                          <p><strong>Fixed Interest:</strong> Same interest amount each month</p>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                  
-                  <Select
-                    value={loanType}
-                    onValueChange={handleLoanTypeChange}
-                  >
-                    <SelectTrigger id="loanType" className="h-10">
-                      <SelectValue placeholder="Select loan type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="evenDistribution">Even Distribution</SelectItem>
-                      <SelectItem value="fixedPrincipal">Fixed Principal</SelectItem>
-                      <SelectItem value="fixedInterest">Fixed Interest</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
             </>
           ) : (
             // Desktop layout - two columns
             <>
-              <div className="space-y-5">
-                <div className="space-y-3">
-                  <Label htmlFor="loanAmount" className="text-base font-medium flex items-center gap-1">
-                    Loan Amount
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>The total amount you wish to borrow</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="relative">
-                    <DollarSignIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                    <Input
-                      id="loanAmount"
-                      type="text"
-                      value={formattedLoanAmount}
-                      onChange={handleLoanAmountChange}
-                      className="pl-10 h-12 text-lg font-medium input-transition ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    />
+              {/* Loan Type Selection - Now at the top outside the two-column layout */}
+              <div className="space-y-3 mb-2">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="loanType" className="text-base font-medium">Loan Type</Label>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs p-4">
+                      <h4 className="font-semibold mb-2">Payment Types:</h4>
+                      <ul className="space-y-2">
+                        <li><strong>Even Distribution:</strong> {loanTypeDescriptions.evenDistribution}</li>
+                        <li><strong>Fixed Principal:</strong> {loanTypeDescriptions.fixedPrincipal}</li>
+                        <li><strong>Fixed Interest:</strong> {loanTypeDescriptions.fixedInterest}</li>
+                      </ul>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                
+                <Select
+                  value={loanType}
+                  onValueChange={handleLoanTypeChange}
+                >
+                  <SelectTrigger id="loanType" className="h-12 input-transition">
+                    <SelectValue placeholder="Select loan type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="evenDistribution">Even Distribution (Equal Payments)</SelectItem>
+                    <SelectItem value="fixedPrincipal">Fixed Principal</SelectItem>
+                    <SelectItem value="fixedInterest">Fixed Interest</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+                  <CollapsibleTrigger asChild>
+                    <Button variant="link" size="sm" className="p-0 h-auto text-sm">
+                      {isOpen ? "Hide explanation" : "What's the difference?"}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-2 p-3 bg-muted/30 rounded-md text-sm text-muted-foreground">
+                    <p className="mb-1"><strong>Even Distribution:</strong> The most common type, with equal monthly payments (like most mortgages).</p>
+                    <p className="mb-1"><strong>Fixed Principal:</strong> You pay the same amount toward principal each month, but less interest over time as your balance decreases.</p>
+                    <p><strong>Fixed Interest:</strong> The interest portion stays fixed, resulting in consistent total payments.</p>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+
+              {/* Two column layout for the remaining inputs */}
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-5">
+                  <div className="space-y-3">
+                    <Label htmlFor="loanAmount" className="text-base font-medium flex items-center gap-1">
+                      Loan Amount
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>The total amount you wish to borrow</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </Label>
+                    <div className="relative">
+                      <DollarSignIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                      <Input
+                        id="loanAmount"
+                        type="text"
+                        value={formattedLoanAmount}
+                        onChange={handleLoanAmountChange}
+                        className="pl-10 h-12 text-lg font-medium input-transition ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      />
+                    </div>
                   </div>
                 </div>
                 
-                <div className="space-y-3">
-                  <Label htmlFor="interestRate" className="text-base font-medium flex items-center gap-1">
-                    Interest Rate (%)
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Annual interest rate for this loan</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Label>
-                  <div className="relative">
-                    <PercentIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                    <Input
-                      id="interestRate"
-                      type="number"
-                      value={interestRate}
-                      onChange={handleInterestRateChange}
-                      step="0.1"
-                      min="0"
-                      max="100"
-                      className="pl-10 h-12 text-lg font-medium input-transition ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    />
+                <div className="space-y-5">
+                  <div className="space-y-3">
+                    <Label htmlFor="interestRate" className="text-base font-medium flex items-center gap-1">
+                      Interest Rate (%)
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Annual interest rate for this loan</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </Label>
+                    <div className="relative">
+                      <PercentIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                      <Input
+                        id="interestRate"
+                        type="number"
+                        value={interestRate}
+                        onChange={handleInterestRateChange}
+                        step="0.1"
+                        min="0"
+                        max="100"
+                        className="pl-10 h-12 text-lg font-medium input-transition ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
               
-              <div className="space-y-5">
+              {/* Loan Term Input - Below the two columns */}
+              <div className="space-y-3 mt-2">
                 <LoanTermInput 
                   loanTermMonths={loanTermMonths} 
                   onChange={handleLoanTermChange} 
                 />
-                
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="loanType" className="text-base font-medium">Loan Type</Label>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs p-4">
-                        <h4 className="font-semibold mb-2">Payment Types:</h4>
-                        <ul className="space-y-2">
-                          <li><strong>Even Distribution:</strong> {loanTypeDescriptions.evenDistribution}</li>
-                          <li><strong>Fixed Principal:</strong> {loanTypeDescriptions.fixedPrincipal}</li>
-                          <li><strong>Fixed Interest:</strong> {loanTypeDescriptions.fixedInterest}</li>
-                        </ul>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                  
-                  <Select
-                    value={loanType}
-                    onValueChange={handleLoanTypeChange}
-                  >
-                    <SelectTrigger id="loanType" className="h-12 input-transition">
-                      <SelectValue placeholder="Select loan type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="evenDistribution">Even Distribution (Equal Payments)</SelectItem>
-                      <SelectItem value="fixedPrincipal">Fixed Principal</SelectItem>
-                      <SelectItem value="fixedInterest">Fixed Interest</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  
-                  <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-                    <CollapsibleTrigger asChild>
-                      <Button variant="link" size="sm" className="p-0 h-auto text-sm">
-                        {isOpen ? "Hide explanation" : "What's the difference?"}
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-2 p-3 bg-muted/30 rounded-md text-sm text-muted-foreground">
-                      <p className="mb-1"><strong>Even Distribution:</strong> The most common type, with equal monthly payments (like most mortgages).</p>
-                      <p className="mb-1"><strong>Fixed Principal:</strong> You pay the same amount toward principal each month, but less interest over time as your balance decreases.</p>
-                      <p><strong>Fixed Interest:</strong> The interest portion stays fixed, resulting in consistent total payments.</p>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
               </div>
             </>
           )}
