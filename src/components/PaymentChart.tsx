@@ -14,23 +14,59 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return [];
     
-    // If we have a lot of payments, sample them to avoid chart overcrowding
-    let sampleData = [...data];
-    if (data.length > 24) {
-      // Sample data for first year (monthly), then yearly after that
-      sampleData = data.filter((item, index) => 
-        index < 12 || // First year: show every month
-        index % 12 === 0 // After first year: show yearly samples
-      );
+    // Calculate the number of years in total payments
+    const totalYears = Math.ceil(data.length / 12);
+    
+    // Create a better sampling strategy for more even time intervals
+    let sampleData = [];
+    
+    if (totalYears <= 1) {
+      // For loans less than a year, show every month
+      sampleData = [...data];
+    } else if (totalYears <= 3) {
+      // For 1-3 year loans, show every 3 months (quarterly)
+      sampleData = data.filter((item, index) => index % 3 === 0);
+    } else if (totalYears <= 10) {
+      // For 3-10 year loans, show every 6 months (semi-annually)
+      sampleData = data.filter((item, index) => index % 6 === 0);
+    } else {
+      // For 10+ year loans, show yearly samples
+      sampleData = data.filter((item, index) => index % 12 === 0);
+      
+      // Always include the first month to show the start point
+      if (!sampleData.includes(data[0])) {
+        sampleData.unshift(data[0]);
+      }
+      
+      // Always include the last month to show the end point
+      if (!sampleData.includes(data[data.length - 1])) {
+        sampleData.push(data[data.length - 1]);
+      }
+      
+      // Sort by period to ensure correct order
+      sampleData.sort((a, b) => a.period - b.period);
     }
     
-    return sampleData.map((item) => ({
-      period: item.period <= 12 
-        ? `Month ${item.period}` 
-        : `Year ${Math.ceil(item.period / 12)}`,
-      principal: parseFloat(item.principal.toFixed(2)),
-      interest: parseFloat(item.interest.toFixed(2))
-    }));
+    return sampleData.map((item) => {
+      // Format the period label more clearly
+      let periodLabel;
+      if (item.period === 1) {
+        periodLabel = "Month 1"; // First month
+      } else if (item.period % 12 === 0) {
+        periodLabel = `Year ${item.period / 12}`; // Full years
+      } else {
+        const year = Math.floor(item.period / 12);
+        const month = item.period % 12;
+        periodLabel = `Y${year+1}M${month}`; // Year and month
+      }
+      
+      return {
+        period: periodLabel,
+        displayPeriod: item.period, // Keep original period for tooltip
+        principal: parseFloat(item.principal.toFixed(2)),
+        interest: parseFloat(item.interest.toFixed(2))
+      };
+    });
   }, [data]);
 
   // Prepare summary data for pie chart
@@ -130,7 +166,12 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
                 />
                 <YAxis />
                 <Tooltip 
-                  formatter={(value) => [`$${value.toLocaleString()}`, '']}
+                  formatter={(value, name, props) => {
+                    const displayPeriod = props.payload.displayPeriod;
+                    const suffix = name === "Principal" ? " (Principal)" : " (Interest)";
+                    // Return formatted value with period information
+                    return [`$${value.toLocaleString()}${suffix}`, `Period ${displayPeriod}`];
+                  }}
                   contentStyle={{ 
                     borderRadius: 8, 
                     border: 'none',
