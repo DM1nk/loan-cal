@@ -1,4 +1,3 @@
-
 export type LoanType = 'fixedPrincipal' | 'fixedInterest' | 'evenDistribution';
 
 export interface PaymentDetail {
@@ -125,12 +124,27 @@ export function calculateLoan(
   };
 }
 
-// Format a number as currency
-export function formatCurrency(value: number): string {
+// Add a new optional parameter to format currency that's more mobile-friendly
+export const formatCurrency = (value: number | string, compact: boolean = false): string => {
+  const numericValue = typeof value === 'string' ? parseFloat(value) : value;
+  
+  if (isNaN(numericValue)) {
+    return '$0.00';
+  }
+
+  // For mobile view, use a more compact format for large numbers
+  if (compact && numericValue >= 1000) {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      notation: 'compact',
+      maximumFractionDigits: 1
+    }).format(numericValue);
+  }
+  
+  // Standard format for desktop or smaller numbers
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(value);
-}
+  }).format(numericValue);
+};
