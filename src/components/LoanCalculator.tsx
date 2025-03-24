@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { CalculatorIcon, RefreshCwIcon, InfoIcon, DollarSignIcon, PercentIcon } from 'lucide-react';
+import { CalculatorIcon, RefreshCwIcon, InfoIcon, DollarSignIcon, PercentIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import { calculateLoan, LoanType, LoanSummary } from '../utils/loanCalculations';
 import ResultsTabs from './ResultsTabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -25,14 +25,17 @@ const LoanCalculator: React.FC = () => {
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [termDisplayMode, setTermDisplayMode] = useState<"years" | "months">("years");
+  const [termInputValue, setTermInputValue] = useState<string>("30");
   
   // Update term display mode based on the current term value
   useEffect(() => {
     // If term is less than 36 months, switch to month display
     if (loanTermMonths < 36) {
       setTermDisplayMode("months");
+      setTermInputValue(loanTermMonths.toString());
     } else {
       setTermDisplayMode("years");
+      setTermInputValue(Math.round(loanTermMonths / 12).toString());
     }
   }, [loanTermMonths]);
   
@@ -56,9 +59,43 @@ const LoanCalculator: React.FC = () => {
     }
   };
   
+  // Handle term input change
+  const handleTermInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim();
+    setTermInputValue(value);
+    
+    const numValue = parseInt(value, 10);
+    if (!isNaN(numValue) && numValue > 0) {
+      // Convert to months if in years mode
+      if (termDisplayMode === "years") {
+        setLoanTermMonths(numValue * 12);
+      } else {
+        setLoanTermMonths(numValue);
+      }
+    }
+  };
+
+  // Increment/decrement term
+  const adjustTerm = (amount: number) => {
+    if (termDisplayMode === "years") {
+      const newYears = Math.max(1, Math.round(loanTermMonths / 12) + amount);
+      setLoanTermMonths(newYears * 12);
+      setTermInputValue(newYears.toString());
+    } else {
+      const newMonths = Math.max(1, Math.min(36, loanTermMonths + amount));
+      setLoanTermMonths(newMonths);
+      setTermInputValue(newMonths.toString());
+    }
+  };
+  
   // Handle loan term slider change
   const handleTermSliderChange = (value: number[]) => {
     setLoanTermMonths(value[0]);
+    if (termDisplayMode === "years") {
+      setTermInputValue(Math.round(value[0] / 12).toString());
+    } else {
+      setTermInputValue(value[0].toString());
+    }
   };
   
   // Toggle between year and month display for slider
@@ -68,11 +105,13 @@ const LoanCalculator: React.FC = () => {
       const currentMonths = Math.round(loanTermMonths / 12) * 12;
       setTermDisplayMode("months");
       setLoanTermMonths(currentMonths > 0 ? currentMonths : 12); // Ensure at least 1 month
+      setTermInputValue(currentMonths.toString());
     } else {
       // Convert current value from months to years, rounding up
       const currentYears = Math.ceil(loanTermMonths / 12);
       setTermDisplayMode("years");
       setLoanTermMonths(currentYears * 12);
+      setTermInputValue(currentYears.toString());
     }
   };
   
@@ -144,6 +183,7 @@ const LoanCalculator: React.FC = () => {
     setLoanType('evenDistribution');
     setResults(null);
     setTermDisplayMode("years");
+    setTermInputValue("30");
     
     toast({
       title: "Calculator reset",
@@ -266,10 +306,41 @@ const LoanCalculator: React.FC = () => {
                         </TooltipContent>
                       </Tooltip>
                     </Label>
-                    <span className="text-base font-semibold text-primary">
-                      {sliderProps.displayValue} {sliderProps.label}
-                    </span>
                   </div>
+                  
+                  <div className="flex items-center gap-2 mb-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 p-0 rounded-full"
+                      onClick={() => adjustTerm(-1)}
+                    >
+                      <MinusIcon className="h-3 w-3" />
+                    </Button>
+                    
+                    <div className="relative flex-1">
+                      <Input
+                        id="termInput"
+                        type="text"
+                        value={termInputValue}
+                        onChange={handleTermInputChange}
+                        className="h-10 text-center font-medium text-primary"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                        {termDisplayMode}
+                      </span>
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 p-0 rounded-full"
+                      onClick={() => adjustTerm(1)}
+                    >
+                      <PlusIcon className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  
                   <Slider
                     id="loanTerm"
                     defaultValue={[sliderProps.value]}
@@ -397,10 +468,41 @@ const LoanCalculator: React.FC = () => {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <span className="text-xl font-semibold text-primary">
-                      {sliderProps.displayValue} {sliderProps.label}
-                    </span>
                   </div>
+                  
+                  <div className="flex items-center gap-3 mb-3">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-10 w-10 p-0 rounded-full"
+                      onClick={() => adjustTerm(-1)}
+                    >
+                      <MinusIcon className="h-4 w-4" />
+                    </Button>
+                    
+                    <div className="relative flex-1">
+                      <Input
+                        id="termInput"
+                        type="text"
+                        value={termInputValue}
+                        onChange={handleTermInputChange}
+                        className="h-12 text-center text-lg font-medium text-primary"
+                      />
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                        {termDisplayMode}
+                      </span>
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-10 w-10 p-0 rounded-full"
+                      onClick={() => adjustTerm(1)}
+                    >
+                      <PlusIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
                   <Slider
                     id="loanTerm"
                     defaultValue={[sliderProps.value]}
