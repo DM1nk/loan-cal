@@ -98,23 +98,23 @@ export function calculateLoan(
       
       for (let month = 1; month <= totalMonths; month++) {
         const principalPayment = loanAmount / totalMonths;
-        const payment = principalPayment + fixedInterestPayment;
+        const paymentAmount = principalPayment + fixedInterestPayment;
         
-        totalPayment += payment;
+        totalPayment += paymentAmount;
         totalInterest += fixedInterestPayment;
         
         remainingBalance -= principalPayment;
         
         paymentSchedule.push({
           period: month,
-          payment: payment,
+          payment: paymentAmount,
           principal: principalPayment,
           interest: fixedInterestPayment,
           remainingBalance: remainingBalance
         });
       }
       
-      monthlyPayment = payment = principalPayment + fixedInterestPayment;
+      monthlyPayment = paymentSchedule[0].payment;
       break;
   }
   
