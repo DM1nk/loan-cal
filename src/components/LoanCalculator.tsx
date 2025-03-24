@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { CalculatorIcon, RefreshCwIcon } from 'lucide-react';
+import { CalculatorIcon, RefreshCwIcon, InfoIcon } from 'lucide-react';
 import { calculateLoan, LoanType, LoanSummary } from '../utils/loanCalculations';
 import ResultsTabs from './ResultsTabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const LoanCalculator: React.FC = () => {
   const { toast } = useToast();
@@ -122,6 +123,13 @@ const LoanCalculator: React.FC = () => {
   // Format loan amount with commas
   const formattedLoanAmount = loanAmount.toLocaleString();
 
+  // Loan type descriptions for tooltips
+  const loanTypeDescriptions = {
+    evenDistribution: "Equal monthly payments throughout the loan term (traditional amortization).",
+    fixedPrincipal: "Principal payment stays the same, total payment decreases over time.",
+    fixedInterest: "Interest payment stays the same, total payment remains constant."
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="glass p-6 animate-fade-in">
@@ -180,7 +188,19 @@ const LoanCalculator: React.FC = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="loanType">Loan Type</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="loanType">Loan Type</Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p><strong>Even Distribution:</strong> {loanTypeDescriptions.evenDistribution}</p>
+                    <p><strong>Fixed Principal:</strong> {loanTypeDescriptions.fixedPrincipal}</p>
+                    <p><strong>Fixed Interest:</strong> {loanTypeDescriptions.fixedInterest}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Select
                 value={loanType}
                 onValueChange={handleLoanTypeChange}

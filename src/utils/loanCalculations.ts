@@ -95,9 +95,10 @@ export function calculateLoan(
       // Fixed interest (interest is constant, principal varies)
       const totalInterestAmount = loanAmount * monthlyRate * totalMonths;
       const fixedInterestPayment = totalInterestAmount / totalMonths;
+      const principalPayment = loanAmount / totalMonths;
+      monthlyPayment = principalPayment + fixedInterestPayment;
       
       for (let month = 1; month <= totalMonths; month++) {
-        const principalPayment = loanAmount / totalMonths;
         const payment = principalPayment + fixedInterestPayment;
         
         totalPayment += payment;
@@ -113,8 +114,6 @@ export function calculateLoan(
           remainingBalance: remainingBalance
         });
       }
-      
-      monthlyPayment = payment = principalPayment + fixedInterestPayment;
       break;
   }
   
