@@ -1,32 +1,23 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoanSummary, formatCurrency } from '../utils/loanCalculations';
 import PaymentChart from './PaymentChart';
 import PaymentTable from './PaymentTable';
 import { ChartBarIcon, TableIcon, CircleDollarSignIcon, Building2Icon, BarChart3Icon } from 'lucide-react';
-
 interface ResultsTabsProps {
   loanResults: LoanSummary | null;
 }
-
-const ResultsTabs: React.FC<ResultsTabsProps> = ({ loanResults }) => {
+const ResultsTabs: React.FC<ResultsTabsProps> = ({
+  loanResults
+}) => {
   if (!loanResults) {
     return null;
   }
-
-  return (
-    <div className="card-gradient rounded-2xl shadow-lg p-8 animate-scale-in">
+  return <div className="card-gradient rounded-2xl shadow-lg p-8 animate-scale-in">
       <h2 className="text-2xl font-bold text-center mb-6">Loan Analysis</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center">
-          <div className="mb-2">
-            <CircleDollarSignIcon className="h-10 w-10 text-primary/80 mb-1" />
-          </div>
-          <h3 className="text-sm font-medium text-gray-500 mb-1">Monthly Payment</h3>
-          <p className="text-3xl font-bold text-primary">{formatCurrency(loanResults.monthlyPayment)}</p>
-        </div>
+        
         
         <div className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center">
           <div className="mb-2">
@@ -63,8 +54,6 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({ loanResults }) => {
           <PaymentTable data={loanResults.paymentSchedule} />
         </TabsContent>
       </Tabs>
-    </div>
-  );
+    </div>;
 };
-
 export default ResultsTabs;
