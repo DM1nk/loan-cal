@@ -1,11 +1,24 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from 'react';
+import LoanCalculator from '../components/LoanCalculator';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen py-16 px-4 bg-gradient-to-b from-blue-50 to-white">
+      <div className="max-w-screen-xl mx-auto">
+        <div className="text-center mb-12 animate-slide-down">
+          <h1 className="text-4xl font-bold mb-2 tracking-tight">Loan Calculator</h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Calculate your loan payments with different repayment methods and see detailed payment schedules
+          </p>
+        </div>
+        
+        <LoanCalculator />
+        
+        <div className="mt-16 text-center text-sm text-muted-foreground animate-fade-in">
+          <p>This calculator provides estimates for informational purposes only.</p>
+          <p>Actual loan terms and payments may vary based on lender policies and your financial situation.</p>
+        </div>
       </div>
     </div>
   );
