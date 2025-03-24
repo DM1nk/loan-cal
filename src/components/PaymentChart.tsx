@@ -17,11 +17,19 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
     
     // Calculate the number of years in total payments
     const totalYears = Math.ceil(data.length / 12);
+    const totalMonths = data.length;
     
     // Create a better sampling strategy for more even time intervals
     let sampleData = [];
     
-    if (totalYears <= 1) {
+    if (totalMonths <= 12) {
+      // For loans less than a year, show every month or every other month
+      if (totalMonths <= 6) {
+        sampleData = [...data];
+      } else {
+        sampleData = data.filter((item, index) => index % 2 === 0);
+      }
+    } else if (totalYears <= 1) {
       // For loans less than a year, show every month
       sampleData = [...data];
     } else if (totalYears <= 5) {
@@ -30,18 +38,19 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
     } else {
       // For longer loans, show yearly samples
       sampleData = data.filter((item, index) => index % 12 === 0);
-      
-      // Always include the first and last periods
-      if (!sampleData.includes(data[0])) {
-        sampleData.unshift(data[0]);
-      }
-      if (!sampleData.includes(data[data.length - 1])) {
-        sampleData.push(data[data.length - 1]);
-      }
-      
-      // Sort by period
-      sampleData.sort((a, b) => a.period - b.period);
     }
+    
+    // Always include the first and last periods
+    if (sampleData.length > 0 && !sampleData.includes(data[0])) {
+      sampleData.unshift(data[0]);
+    }
+    
+    if (sampleData.length > 0 && !sampleData.includes(data[data.length - 1])) {
+      sampleData.push(data[data.length - 1]);
+    }
+    
+    // Sort by period
+    sampleData.sort((a, b) => a.period - b.period);
     
     // Further reduce sampling on mobile for better readability
     if (isMobile && sampleData.length > 6) {
@@ -53,19 +62,32 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
     return sampleData.map((item) => {
       // Simplify the period labels
       let periodLabel;
-      if (item.period === 1) {
-        periodLabel = "Start"; 
-      } else if (item.period === data.length) {
-        periodLabel = "End";
-      } else if (item.period % 12 === 0) {
-        periodLabel = `Y${item.period / 12}`; 
-      } else {
-        const year = Math.floor(item.period / 12);
-        const month = item.period % 12;
-        if (year === 0) {
-          periodLabel = `M${month}`;
+      
+      if (totalMonths <= 12) {
+        // For loans under 1 year, show as "M1", "M2", etc.
+        if (item.period === 1) {
+          periodLabel = "Start";
+        } else if (item.period === data.length) {
+          periodLabel = "End";
         } else {
-          periodLabel = `Y${year+1}`;
+          periodLabel = `M${item.period}`;
+        }
+      } else {
+        // For longer loans
+        if (item.period === 1) {
+          periodLabel = "Start"; 
+        } else if (item.period === data.length) {
+          periodLabel = "End";
+        } else if (item.period % 12 === 0) {
+          periodLabel = `Y${item.period / 12}`; 
+        } else {
+          const year = Math.floor(item.period / 12);
+          const month = item.period % 12;
+          if (year === 0) {
+            periodLabel = `M${month}`;
+          } else {
+            periodLabel = `Y${year+1}`;
+          }
         }
       }
       

@@ -1,3 +1,4 @@
+
 export type LoanType = 'fixedPrincipal' | 'fixedInterest' | 'evenDistribution';
 
 export interface PaymentDetail {
@@ -18,12 +19,12 @@ export interface LoanSummary {
 export function calculateLoan(
   loanAmount: number,
   interestRate: number,
-  loanTerm: number,
+  loanTermMonths: number, // Changed to accept term in months
   loanType: LoanType
 ): LoanSummary {
   // Convert annual interest rate to monthly rate
   const monthlyRate = interestRate / 100 / 12;
-  const totalMonths = loanTerm * 12;
+  const totalMonths = loanTermMonths; // Now directly in months
   
   let paymentSchedule: PaymentDetail[] = [];
   let totalPayment = 0;

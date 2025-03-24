@@ -19,11 +19,22 @@ const LoanCalculator: React.FC = () => {
   
   const [loanAmount, setLoanAmount] = useState<number>(300000);
   const [interestRate, setInterestRate] = useState<number>(5.5);
-  const [loanTerm, setLoanTerm] = useState<number>(30);
+  const [loanTermMonths, setLoanTermMonths] = useState<number>(360); // Store term in months
   const [loanType, setLoanType] = useState<LoanType>('evenDistribution');
   const [results, setResults] = useState<LoanSummary | null>(null);
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [termDisplayMode, setTermDisplayMode] = useState<"years" | "months">("years");
+  
+  // Update term display mode based on the current term value
+  useEffect(() => {
+    // If term is less than 36 months, switch to month display
+    if (loanTermMonths < 36) {
+      setTermDisplayMode("months");
+    } else {
+      setTermDisplayMode("years");
+    }
+  }, [loanTermMonths]);
   
   // Handle loan amount input
   const handleLoanAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +58,22 @@ const LoanCalculator: React.FC = () => {
   
   // Handle loan term slider change
   const handleTermSliderChange = (value: number[]) => {
-    setLoanTerm(value[0]);
+    setLoanTermMonths(value[0]);
+  };
+  
+  // Toggle between year and month display for slider
+  const toggleTermDisplayMode = () => {
+    if (termDisplayMode === "years") {
+      // Convert current value from years to months
+      const currentMonths = Math.round(loanTermMonths / 12) * 12;
+      setTermDisplayMode("months");
+      setLoanTermMonths(currentMonths > 0 ? currentMonths : 12); // Ensure at least 1 month
+    } else {
+      // Convert current value from months to years, rounding up
+      const currentYears = Math.ceil(loanTermMonths / 12);
+      setTermDisplayMode("years");
+      setLoanTermMonths(currentYears * 12);
+    }
   };
   
   // Handle loan type selection
@@ -76,7 +102,7 @@ const LoanCalculator: React.FC = () => {
       return;
     }
     
-    if (loanTerm <= 0) {
+    if (loanTermMonths <= 0) {
       toast({
         title: "Invalid loan term",
         description: "Please select a loan term greater than zero.",
@@ -90,7 +116,7 @@ const LoanCalculator: React.FC = () => {
     // Small delay to show loading state
     setTimeout(() => {
       try {
-        const calculatedResults = calculateLoan(loanAmount, interestRate, loanTerm, loanType);
+        const calculatedResults = calculateLoan(loanAmount, interestRate, loanTermMonths, loanType);
         setResults(calculatedResults);
         
         toast({
@@ -114,9 +140,10 @@ const LoanCalculator: React.FC = () => {
   const resetCalculator = () => {
     setLoanAmount(300000);
     setInterestRate(5.5);
-    setLoanTerm(30);
+    setLoanTermMonths(360); // 30 years in months
     setLoanType('evenDistribution');
     setResults(null);
+    setTermDisplayMode("years");
     
     toast({
       title: "Calculator reset",
@@ -133,6 +160,31 @@ const LoanCalculator: React.FC = () => {
     fixedPrincipal: "Principal payment stays the same, total payment decreases over time.",
     fixedInterest: "Interest payment stays the same, total payment remains constant."
   };
+
+  // Get appropriate min, max, and step for the slider based on display mode
+  const getSliderProps = () => {
+    if (termDisplayMode === "years") {
+      return {
+        min: 1,
+        max: 40,
+        step: 1,
+        value: Math.round(loanTermMonths / 12), // Convert months to years
+        label: loanTermMonths / 12 === 1 ? 'Year' : 'Years',
+        displayValue: Math.round(loanTermMonths / 12)
+      };
+    } else {
+      return {
+        min: 1,
+        max: 36, // Max 36 months for month mode
+        step: 1,
+        value: loanTermMonths,
+        label: loanTermMonths === 1 ? 'Month' : 'Months',
+        displayValue: loanTermMonths
+      };
+    }
+  };
+
+  const sliderProps = getSliderProps();
 
   return (
     <div className="w-full max-w-4xl mx-auto px-2 sm:px-4">
@@ -197,29 +249,40 @@ const LoanCalculator: React.FC = () => {
                   <div className="flex justify-between items-center">
                     <Label htmlFor="loanTerm" className="text-sm font-medium flex items-center gap-1">
                       Loan Term 
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={toggleTermDisplayMode} 
+                        className="h-6 px-2 text-xs text-primary"
+                      >
+                        {termDisplayMode === "years" ? "(show months)" : "(show years)"}
+                      </Button>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <InfoIcon className="h-3 w-3 text-muted-foreground cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent side="top">
-                          <p className="text-xs">Length of the loan in years</p>
+                          <p className="text-xs">Length of the loan in {termDisplayMode}</p>
                         </TooltipContent>
                       </Tooltip>
                     </Label>
-                    <span className="text-base font-semibold text-primary">{loanTerm} {loanTerm === 1 ? 'Year' : 'Years'}</span>
+                    <span className="text-base font-semibold text-primary">
+                      {sliderProps.displayValue} {sliderProps.label}
+                    </span>
                   </div>
                   <Slider
                     id="loanTerm"
-                    defaultValue={[loanTerm]}
-                    max={40}
-                    min={1}
-                    step={1}
+                    defaultValue={[sliderProps.value]}
+                    value={[sliderProps.value]}
+                    max={sliderProps.max}
+                    min={sliderProps.min}
+                    step={sliderProps.step}
                     onValueChange={handleTermSliderChange}
                     className="input-transition py-2"
                   />
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>1 Year</span>
-                    <span>40 Years</span>
+                    <span>{sliderProps.min} {sliderProps.label}</span>
+                    <span>{sliderProps.max} {sliderProps.label}</span>
                   </div>
                 </div>
                 
@@ -315,31 +378,42 @@ const LoanCalculator: React.FC = () => {
               <div className="space-y-5">
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <Label htmlFor="loanTerm" className="text-base font-medium flex items-center gap-1">
-                      Loan Term 
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="loanTerm" className="text-base font-medium">Loan Term</Label>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={toggleTermDisplayMode} 
+                        className="h-8 px-3 text-xs"
+                      >
+                        Switch to {termDisplayMode === "years" ? "Months" : "Years"}
+                      </Button>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Length of the loan in years</p>
+                          <p>Length of the loan in {termDisplayMode}</p>
                         </TooltipContent>
                       </Tooltip>
-                    </Label>
-                    <span className="text-xl font-semibold text-primary">{loanTerm} {loanTerm === 1 ? 'Year' : 'Years'}</span>
+                    </div>
+                    <span className="text-xl font-semibold text-primary">
+                      {sliderProps.displayValue} {sliderProps.label}
+                    </span>
                   </div>
                   <Slider
                     id="loanTerm"
-                    defaultValue={[loanTerm]}
-                    max={40}
-                    min={1}
-                    step={1}
+                    defaultValue={[sliderProps.value]}
+                    value={[sliderProps.value]}
+                    max={sliderProps.max}
+                    min={sliderProps.min}
+                    step={sliderProps.step}
                     onValueChange={handleTermSliderChange}
                     className="input-transition py-2"
                   />
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>1 Year</span>
-                    <span>40 Years</span>
+                    <span>{sliderProps.min} {sliderProps.label}</span>
+                    <span>{sliderProps.max} {sliderProps.label}</span>
                   </div>
                 </div>
                 
