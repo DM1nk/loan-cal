@@ -2,12 +2,15 @@
 import React, { useMemo } from 'react';
 import { PaymentDetail } from '../utils/loanCalculations';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PaymentChartProps {
   data: PaymentDetail[];
 }
 
 const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
+  const isMobile = useIsMobile();
+  
   // Prepare chart data: We'll show a sample of the data points to avoid overcrowding
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -40,6 +43,13 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
       sampleData.sort((a, b) => a.period - b.period);
     }
     
+    // Further reduce sampling on mobile for better readability
+    if (isMobile && sampleData.length > 6) {
+      // For mobile, if we have more than 6 samples, reduce it further
+      const step = Math.ceil(sampleData.length / 6);
+      sampleData = sampleData.filter((_, index) => index % step === 0 || index === sampleData.length - 1);
+    }
+    
     return sampleData.map((item) => {
       // Simplify the period labels
       let periodLabel;
@@ -66,7 +76,7 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
         interest: parseFloat(item.interest.toFixed(2))
       };
     });
-  }, [data]);
+  }, [data, isMobile]);
 
   const COLORS = {
     principal: '#3b82f6', // Primary blue
@@ -79,25 +89,42 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
 
   return (
     <div className="w-full h-full animate-fade-in">
-      <div className="p-4 mb-2">
-        <h3 className="text-lg font-medium text-center">Payment Breakdown</h3>
+      <div className={`${isMobile ? 'p-2 mb-1' : 'p-4 mb-2'}`}>
+        <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-medium text-center`}>Payment Breakdown</h3>
       </div>
       
-      <div className="w-full h-[350px]">
+      <div className={`w-full ${isMobile ? 'h-[260px]' : 'h-[350px]'}`}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+            margin={isMobile ? 
+              { top: 10, right: 5, left: 0, bottom: 40 } : 
+              { top: 20, right: 30, left: 20, bottom: 50 }}
             barGap={0}
-            barCategoryGap="20%"
+            barCategoryGap={isMobile ? "10%" : "20%"}
           >
             <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
             <XAxis 
               dataKey="period" 
-              tick={{ fontSize: 12 }}
-              height={40}
+              tick={{ fontSize: isMobile ? 10 : 12 }}
+              height={isMobile ? 30 : 40}
+              interval={isMobile ? 0 : 'preserveStartEnd'}
+              tickMargin={isMobile ? 5 : 10}
             />
-            <YAxis />
+            <YAxis 
+              width={isMobile ? 35 : 45}
+              tick={{ fontSize: isMobile ? 10 : 12 }}
+              tickFormatter={(value) => {
+                if (isMobile) {
+                  // Simplify Y-axis formatting on mobile
+                  if (value >= 1000) {
+                    return `${(value/1000).toFixed(0)}K`;
+                  }
+                  return value;
+                }
+                return value;
+              }}
+            />
             <Tooltip 
               formatter={(value, name) => {
                 const label = name === "Principal" ? "Principal" : "Interest";
@@ -107,10 +134,20 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
                 borderRadius: 8, 
                 border: 'none',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)'
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                padding: isMobile ? '4px 8px' : '8px 12px',
+                fontSize: isMobile ? '11px' : '12px'
+              }}
+              wrapperStyle={{
+                fontSize: isMobile ? '11px' : '12px'
               }}
             />
-            <Legend />
+            <Legend 
+              wrapperStyle={{
+                fontSize: isMobile ? '10px' : '12px',
+                paddingTop: isMobile ? '5px' : '10px'
+              }}
+            />
             <Bar 
               name="Principal" 
               dataKey="principal" 
