@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeftIcon, ChevronRightIcon, SearchIcon, FilterIcon } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from 'lucide-react';
 
 interface PaymentTableProps {
   data: PaymentDetail[];
@@ -13,7 +13,7 @@ interface PaymentTableProps {
 
 const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [itemsPerPage] = useState(12); // Fixed value now, removed state setter
   const [filterValue, setFilterValue] = useState("");
   const [filterType, setFilterType] = useState<"period" | "all">("all");
 
@@ -51,11 +51,6 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
     setCurrentPage(page);
   };
 
-  const handleItemsPerPageChange = (value: string) => {
-    setItemsPerPage(parseInt(value));
-    setCurrentPage(1); // Reset to first page when changing items per page
-  };
-
   return (
     <div className="w-full animate-fade-in overflow-auto">
       <div className="p-4 mb-4">
@@ -86,24 +81,6 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="period">Period</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Rows per page:</span>
-          <Select
-            value={itemsPerPage.toString()}
-            onValueChange={handleItemsPerPageChange}
-          >
-            <SelectTrigger className="w-[80px]">
-              <SelectValue placeholder="12" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="12">12</SelectItem>
-              <SelectItem value="24">24</SelectItem>
-              <SelectItem value="48">48</SelectItem>
-              <SelectItem value="96">96</SelectItem>
             </SelectContent>
           </Select>
         </div>
