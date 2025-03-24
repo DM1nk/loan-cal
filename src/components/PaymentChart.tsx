@@ -23,53 +23,54 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
     if (totalYears <= 1) {
       // For loans less than a year, show every month
       sampleData = [...data];
-    } else if (totalYears <= 3) {
-      // For 1-3 year loans, show every 3 months (quarterly)
-      sampleData = data.filter((item, index) => index % 3 === 0);
-    } else if (totalYears <= 10) {
-      // For 3-10 year loans, show every 6 months (semi-annually)
+    } else if (totalYears <= 5) {
+      // For loans up to 5 years, show every 6 months
       sampleData = data.filter((item, index) => index % 6 === 0);
     } else {
-      // For 10+ year loans, show yearly samples
+      // For longer loans, show yearly samples
       sampleData = data.filter((item, index) => index % 12 === 0);
       
-      // Always include the first month to show the start point
+      // Always include the first and last periods
       if (!sampleData.includes(data[0])) {
         sampleData.unshift(data[0]);
       }
-      
-      // Always include the last month to show the end point
       if (!sampleData.includes(data[data.length - 1])) {
         sampleData.push(data[data.length - 1]);
       }
       
-      // Sort by period to ensure correct order
+      // Sort by period
       sampleData.sort((a, b) => a.period - b.period);
     }
     
     return sampleData.map((item) => {
-      // Format the period label more clearly
+      // Simplify the period labels
       let periodLabel;
       if (item.period === 1) {
-        periodLabel = "Month 1"; // First month
+        periodLabel = "Start"; 
+      } else if (item.period === data.length) {
+        periodLabel = "End";
       } else if (item.period % 12 === 0) {
-        periodLabel = `Year ${item.period / 12}`; // Full years
+        periodLabel = `Y${item.period / 12}`; 
       } else {
         const year = Math.floor(item.period / 12);
         const month = item.period % 12;
-        periodLabel = `Y${year+1}M${month}`; // Year and month
+        if (year === 0) {
+          periodLabel = `M${month}`;
+        } else {
+          periodLabel = `Y${year+1}`;
+        }
       }
       
       return {
         period: periodLabel,
-        displayPeriod: item.period, // Keep original period for tooltip
+        displayPeriod: item.period,
         principal: parseFloat(item.principal.toFixed(2)),
         interest: parseFloat(item.interest.toFixed(2))
       };
     });
   }, [data]);
 
-  // Prepare summary data for pie chart
+  // Prepare summary data for pie chart - simplify to just two values
   const summaryData = useMemo(() => {
     if (!data || data.length === 0) return [];
     
@@ -91,8 +92,9 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
     return <div className="flex items-center justify-center h-64">No data to display</div>;
   }
 
+  // Simplified active shape for the pie chart
   const renderActiveShape = (props: any) => {
-    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, value } = props;
     return (
       <g>
         <Sector
@@ -104,23 +106,8 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
           endAngle={endAngle}
           fill={fill}
         />
-        <Sector
-          cx={cx}
-          cy={cy}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          innerRadius={outerRadius + 6}
-          outerRadius={outerRadius + 10}
-          fill={fill}
-        />
-        <text x={cx} y={cy - 20} dy={8} textAnchor="middle" fill="#333" className="text-lg">
-          {payload.name}
-        </text>
-        <text x={cx} y={cy + 10} textAnchor="middle" fill="#333">
-          ${value.toLocaleString()}
-        </text>
-        <text x={cx} y={cy + 30} textAnchor="middle" fill="#999">
-          {`${(percent * 100).toFixed(2)}%`}
+        <text x={cx} y={cy} dy={8} textAnchor="middle" fill="#333" className="text-lg font-medium">
+          {`${payload.name}: $${value.toLocaleString()}`}
         </text>
       </g>
     );
@@ -128,15 +115,12 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
 
   return (
     <div className="w-full h-full animate-fade-in">
-      <div className="p-4 mb-4">
+      <div className="p-4 mb-2">
         <h3 className="text-lg font-medium text-center">Payment Breakdown</h3>
-        <p className="text-sm text-center text-muted-foreground">
-          Chart showing principal vs interest over time
-        </p>
       </div>
       
       <Tabs defaultValue="bar" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-xs mx-auto mb-6">
+        <TabsList className="grid w-full grid-cols-2 max-w-xs mx-auto mb-4">
           <TabsTrigger value="bar" className="flex items-center gap-2">
             <BarChartIcon className="w-4 h-4" />
             <span>Timeline</span>
@@ -148,29 +132,25 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
         </TabsList>
         
         <TabsContent value="bar" className="tab-transition">
-          <div className="w-full h-[400px]">
+          <div className="w-full h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 70 }}
+                margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
                 barGap={0}
-                barCategoryGap="10%"
+                barCategoryGap="20%"
               >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                 <XAxis 
                   dataKey="period" 
-                  angle={-45} 
-                  textAnchor="end" 
                   tick={{ fontSize: 12 }}
-                  height={70}
+                  height={40}
                 />
                 <YAxis />
                 <Tooltip 
-                  formatter={(value, name, props) => {
-                    const displayPeriod = props.payload.displayPeriod;
-                    const suffix = name === "Principal" ? " (Principal)" : " (Interest)";
-                    // Return formatted value with period information
-                    return [`$${value.toLocaleString()}${suffix}`, `Period ${displayPeriod}`];
+                  formatter={(value, name) => {
+                    const label = name === "Principal" ? "Principal" : "Interest";
+                    return [`$${value.toLocaleString()}`, label];
                   }}
                   contentStyle={{ 
                     borderRadius: 8, 
@@ -186,8 +166,6 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
                   stackId="a" 
                   fill={COLORS.principal}
                   radius={[4, 4, 0, 0]}
-                  animationDuration={1000}
-                  animationEasing="ease-out"
                 />
                 <Bar 
                   name="Interest" 
@@ -195,9 +173,6 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
                   stackId="a" 
                   fill={COLORS.interest}
                   radius={[4, 4, 0, 0]}
-                  animationDuration={1000}
-                  animationEasing="ease-out"
-                  animationBegin={300}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -205,7 +180,7 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
         </TabsContent>
         
         <TabsContent value="pie" className="tab-transition">
-          <div className="w-full h-[400px]">
+          <div className="w-full h-[350px] flex flex-col items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -214,20 +189,12 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
                   data={summaryData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={80}
-                  outerRadius={120}
+                  innerRadius={60}
+                  outerRadius={90}
                   dataKey="value"
-                  animationDuration={1000}
-                  animationEasing="ease-out"
                 />
                 <Tooltip 
                   formatter={(value) => [`$${value.toLocaleString()}`, '']}
-                  contentStyle={{ 
-                    borderRadius: 8, 
-                    border: 'none',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)'
-                  }}
                 />
                 <Legend />
               </PieChart>
