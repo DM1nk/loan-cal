@@ -6,10 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { CalculatorIcon, RefreshCwIcon, InfoIcon } from 'lucide-react';
+import { CalculatorIcon, RefreshCwIcon, InfoIcon, DollarSignIcon, PercentIcon } from 'lucide-react';
 import { calculateLoan, LoanType, LoanSummary } from '../utils/loanCalculations';
 import ResultsTabs from './ResultsTabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const LoanCalculator: React.FC = () => {
   const { toast } = useToast();
@@ -20,6 +21,7 @@ const LoanCalculator: React.FC = () => {
   const [loanType, setLoanType] = useState<LoanType>('evenDistribution');
   const [results, setResults] = useState<LoanSummary | null>(null);
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   
   // Handle loan amount input
   const handleLoanAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,26 +134,47 @@ const LoanCalculator: React.FC = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <div className="glass p-6 animate-fade-in">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="loanAmount">Loan Amount</Label>
+      <div className="card-gradient p-8 rounded-2xl shadow-lg animate-fade-in mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <Label htmlFor="loanAmount" className="text-base font-medium flex items-center gap-1">
+                Loan Amount
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>The total amount you wish to borrow</p>
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <DollarSignIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
                   id="loanAmount"
                   type="text"
                   value={formattedLoanAmount}
                   onChange={handleLoanAmountChange}
-                  className="pl-7 input-transition"
+                  className="pl-10 h-12 text-lg font-medium input-transition ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 />
               </div>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="interestRate">Interest Rate (%)</Label>
+            <div className="space-y-3">
+              <Label htmlFor="interestRate" className="text-base font-medium flex items-center gap-1">
+                Interest Rate (%)
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Annual interest rate for this loan</p>
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
               <div className="relative">
+                <PercentIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
                   id="interestRate"
                   type="number"
@@ -160,17 +183,27 @@ const LoanCalculator: React.FC = () => {
                   step="0.1"
                   min="0"
                   max="100"
-                  className="pr-7 input-transition"
+                  className="pl-10 h-12 text-lg font-medium input-transition ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
               </div>
             </div>
           </div>
           
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <Label htmlFor="loanTerm">Loan Term (Years): {loanTerm}</Label>
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <Label htmlFor="loanTerm" className="text-base font-medium flex items-center gap-1">
+                  Loan Term 
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Length of the loan in years</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </Label>
+                <span className="text-xl font-semibold text-primary">{loanTerm} {loanTerm === 1 ? 'Year' : 'Years'}</span>
               </div>
               <Slider
                 id="loanTerm"
@@ -179,7 +212,7 @@ const LoanCalculator: React.FC = () => {
                 min={1}
                 step={1}
                 onValueChange={handleTermSliderChange}
-                className="input-transition"
+                className="input-transition py-2"
               />
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>1 Year</span>
@@ -187,25 +220,29 @@ const LoanCalculator: React.FC = () => {
               </div>
             </div>
             
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Label htmlFor="loanType">Loan Type</Label>
+                <Label htmlFor="loanType" className="text-base font-medium">Loan Type</Label>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p><strong>Even Distribution:</strong> {loanTypeDescriptions.evenDistribution}</p>
-                    <p><strong>Fixed Principal:</strong> {loanTypeDescriptions.fixedPrincipal}</p>
-                    <p><strong>Fixed Interest:</strong> {loanTypeDescriptions.fixedInterest}</p>
+                  <TooltipContent className="max-w-xs p-4">
+                    <h4 className="font-semibold mb-2">Payment Types:</h4>
+                    <ul className="space-y-2">
+                      <li><strong>Even Distribution:</strong> {loanTypeDescriptions.evenDistribution}</li>
+                      <li><strong>Fixed Principal:</strong> {loanTypeDescriptions.fixedPrincipal}</li>
+                      <li><strong>Fixed Interest:</strong> {loanTypeDescriptions.fixedInterest}</li>
+                    </ul>
                   </TooltipContent>
                 </Tooltip>
               </div>
+              
               <Select
                 value={loanType}
                 onValueChange={handleLoanTypeChange}
               >
-                <SelectTrigger id="loanType" className="input-transition">
+                <SelectTrigger id="loanType" className="h-12 input-transition">
                   <SelectValue placeholder="Select loan type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -214,6 +251,19 @@ const LoanCalculator: React.FC = () => {
                   <SelectItem value="fixedInterest">Fixed Interest</SelectItem>
                 </SelectContent>
               </Select>
+              
+              <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+                <CollapsibleTrigger asChild>
+                  <Button variant="link" size="sm" className="p-0 h-auto text-sm">
+                    {isOpen ? "Hide explanation" : "What's the difference?"}
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-2 p-3 bg-muted/30 rounded-md text-sm text-muted-foreground">
+                  <p className="mb-1"><strong>Even Distribution:</strong> The most common type, with equal monthly payments (like most mortgages).</p>
+                  <p className="mb-1"><strong>Fixed Principal:</strong> You pay the same amount toward principal each month, but less interest over time as your balance decreases.</p>
+                  <p><strong>Fixed Interest:</strong> The interest portion stays fixed, resulting in consistent total payments.</p>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           </div>
         </div>
@@ -222,18 +272,18 @@ const LoanCalculator: React.FC = () => {
           <Button 
             onClick={resetCalculator}
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 h-12 px-6 text-base font-medium"
           >
-            <RefreshCwIcon className="h-4 w-4" />
+            <RefreshCwIcon className="h-5 w-5" />
             Reset
           </Button>
           
           <Button 
             onClick={calculateResults}
             disabled={isCalculating}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 h-12 px-8 text-base font-medium bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
           >
-            <CalculatorIcon className="h-4 w-4" />
+            <CalculatorIcon className="h-5 w-5" />
             {isCalculating ? 'Calculating...' : 'Calculate'}
           </Button>
         </div>

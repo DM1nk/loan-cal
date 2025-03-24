@@ -7,7 +7,9 @@ const Index = () => {
     <div className="min-h-screen py-16 px-4 bg-gradient-to-b from-blue-50 to-white">
       <div className="max-w-screen-xl mx-auto">
         <div className="text-center mb-12 animate-slide-down">
-          <h1 className="text-4xl font-bold mb-2 tracking-tight">Loan Calculator</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 bg-clip-text text-transparent">
+            Loan Calculator
+          </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Calculate your loan payments with different repayment methods and see detailed payment schedules
           </p>
