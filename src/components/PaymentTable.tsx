@@ -92,8 +92,8 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
             <TableRow>
               <TableHead className="text-center">Period</TableHead>
               <TableHead className="text-center">Payment</TableHead>
-              <TableHead className="text-center">Principal</TableHead>
               <TableHead className="text-center">Interest</TableHead>
+              <TableHead className="text-center">Principal</TableHead>
               <TableHead className="text-center">Remaining Balance</TableHead>
             </TableRow>
           </TableHeader>
@@ -107,10 +107,10 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
                   {formatCurrency(item.payment)}
                 </TableCell>
                 <TableCell className="text-center">
-                  {formatCurrency(item.principal)}
+                  {formatCurrency(item.interest)}
                 </TableCell>
                 <TableCell className="text-center">
-                  {formatCurrency(item.interest)}
+                  {formatCurrency(item.principal)}
                 </TableCell>
                 <TableCell className="text-center">
                   {formatCurrency(item.remainingBalance)}
