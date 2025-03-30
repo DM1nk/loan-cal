@@ -1,28 +1,80 @@
 
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LoanSummary, formatCurrency } from '../utils/loanCalculations';
+import { LoanSummary, formatCurrency, LoanType } from '../utils/loanCalculations';
 import PaymentChart from './PaymentChart';
 import PaymentTable from './PaymentTable';
 import { ChartBarIcon, TableIcon, Building2Icon, BarChart3Icon } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { InfoIcon } from 'lucide-react';
 
 interface ResultsTabsProps {
   loanResults: LoanSummary | null;
+  loanType: LoanType;
+  onLoanTypeChange: (value: LoanType) => void;
 }
 
 const ResultsTabs: React.FC<ResultsTabsProps> = ({
-  loanResults
+  loanResults,
+  loanType,
+  onLoanTypeChange
 }) => {
   const isMobile = useIsMobile();
   
   if (!loanResults) {
     return null;
   }
+
+  // Loan type descriptions for tooltips
+  const loanTypeDescriptions = {
+    evenDistribution: "Khoản thanh toán hàng tháng bằng nhau trong suốt thời hạn vay (trả góp truyền thống).",
+    fixedPrincipal: "Khoản thanh toán gốc giữ nguyên, tổng khoản thanh toán giảm dần theo thời gian.",
+    fixedInterest: "Khoản thanh toán lãi giữ nguyên, tổng khoản thanh toán không đổi."
+  };
+
+  const handleLoanTypeChange = (value: string) => {
+    onLoanTypeChange(value as LoanType);
+  };
   
   return (
     <div className="card-gradient rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-8 animate-scale-in">
       <h2 className="text-lg sm:text-2xl font-bold text-center mb-3 sm:mb-6">Phân Tích Khoản Vay</h2>
+      
+      {/* Loan Type Selection - Now in the results section */}
+      <div className="mb-4 sm:mb-6">
+        <div className="flex items-center gap-1 mb-1">
+          <Label htmlFor="resultLoanType" className="text-sm sm:text-base font-medium">Loại Khoản Vay</Label>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <InfoIcon className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-[250px]">
+              <div className="text-xs sm:text-sm space-y-1">
+                <p><strong>Phân bổ đều:</strong> Khoản thanh toán hàng tháng bằng nhau</p>
+                <p><strong>Gốc cố định:</strong> Khoản gốc giữ nguyên mỗi tháng</p>
+                <p><strong>Lãi cố định:</strong> Khoản lãi giữ nguyên mỗi tháng</p>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        
+        <Select
+          value={loanType}
+          onValueChange={handleLoanTypeChange}
+        >
+          <SelectTrigger id="resultLoanType" className="h-10 sm:h-12 input-transition">
+            <SelectValue placeholder="Chọn loại khoản vay" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="evenDistribution">Phân Bổ Đều (Khoản Thanh Toán Bằng Nhau)</SelectItem>
+            <SelectItem value="fixedPrincipal">Gốc Cố Định</SelectItem>
+            <SelectItem value="fixedInterest">Lãi Cố Định</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       
       {isMobile ? (
         // Mobile layout for stats cards - simplified to fit better
