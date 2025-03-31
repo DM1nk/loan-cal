@@ -20,7 +20,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
   const isMobile = useIsMobile();
 
   if (!data || data.length === 0) {
-    return <div className="flex items-center justify-center h-64">No data to display</div>;
+    return <div className="flex items-center justify-center h-64">Không có dữ liệu để hiển thị</div>;
   }
 
   // Filter the data
@@ -56,9 +56,9 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
   return (
     <div className="w-full animate-fade-in overflow-auto">
       <div className="p-2 sm:p-4 mb-2 sm:mb-4">
-        <h3 className="text-base sm:text-lg font-medium text-center">Amortization Schedule</h3>
+        <h3 className="text-base sm:text-lg font-medium text-center">Lịch Trả Nợ</h3>
         <p className="text-xs sm:text-sm text-center text-muted-foreground">
-          Detailed payment schedule for your loan
+          Lịch thanh toán chi tiết cho khoản vay của bạn
         </p>
       </div>
 
@@ -66,7 +66,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
         <div className="relative w-full">
           <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           <Input
-            placeholder="Search..."
+            placeholder="Tìm kiếm..."
             className="pl-7 sm:pl-9 h-8 sm:h-10 text-xs sm:text-sm"
             value={filterValue}
             onChange={(e) => setFilterValue(e.target.value)}
@@ -78,11 +78,11 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
           onValueChange={(value) => setFilterType(value as "period" | "all")}
         >
           <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm w-full">
-            <SelectValue placeholder="Filter by" />
+            <SelectValue placeholder="Lọc theo" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Fields</SelectItem>
-            <SelectItem value="period">Period Only</SelectItem>
+            <SelectItem value="all">Tất Cả Trường</SelectItem>
+            <SelectItem value="period">Chỉ Kỳ Hạn</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -91,11 +91,11 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow>
-              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Period</TableHead>
-              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Payment</TableHead>
-              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Interest</TableHead>
-              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Principal</TableHead>
-              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Balance</TableHead>
+              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Kỳ</TableHead>
+              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Thanh Toán</TableHead>
+              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Lãi</TableHead>
+              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Gốc</TableHead>
+              <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Dư Nợ</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -129,8 +129,8 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-3 sm:mt-4 gap-2">
           <div className="text-xs text-muted-foreground text-center sm:text-left">
             {isMobile ? 
-              `${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredData.length)} of ${filteredData.length}` :
-              `Showing ${startIndex + 1} to ${Math.min(startIndex + itemsPerPage, filteredData.length)} of ${filteredData.length} entries`
+              `${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredData.length)} / ${filteredData.length}` :
+              `Hiển thị ${startIndex + 1} đến ${Math.min(startIndex + itemsPerPage, filteredData.length)} trong tổng số ${filteredData.length} mục`
             }
           </div>
           <div className="flex items-center justify-center sm:justify-end gap-2">
