@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoanSummary, formatCurrency, LoanType } from '../utils/loanCalculations';
@@ -77,7 +76,6 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
       </div>
       
       {isMobile ? (
-        // Mobile layout for stats cards - simplified to fit better
         <div className="flex flex-wrap gap-2 mb-4">
           <div className="flex-1 min-w-[48%] p-2 rounded-lg bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center">
             <Building2Icon className="h-6 w-6 text-primary/80 mb-1" />
@@ -92,7 +90,6 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
           </div>
         </div>
       ) : (
-        // Desktop layout
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-6 mb-6 sm:mb-8">
           <div className="p-3 sm:p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center hover:shadow-md transition-all duration-200">
             <div className="mb-1 sm:mb-2">
@@ -119,7 +116,7 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
             className="flex items-center gap-1 sm:gap-2 text-xs sm:text-base p-1.5 sm:p-4 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200"
           >
             <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>{isMobile ? "Biểu Đồ" : "Biểu Đồ Thanh Toán"}</span>
+            <span>{isMobile ? "Biểu Đồ" : "Lộ Trình Thanh Toán"}</span>
           </TabsTrigger>
           <TabsTrigger 
             value="table" 

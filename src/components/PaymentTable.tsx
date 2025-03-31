@@ -3,9 +3,7 @@ import React, { useState } from 'react';
 import { PaymentDetail, formatCurrency } from '../utils/loanCalculations';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PaymentTableProps {
@@ -15,37 +13,16 @@ interface PaymentTableProps {
 const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12); // Fixed value
-  const [filterValue, setFilterValue] = useState("");
-  const [filterType, setFilterType] = useState<"period" | "all">("all");
   const isMobile = useIsMobile();
 
   if (!data || data.length === 0) {
     return <div className="flex items-center justify-center h-64">Không có dữ liệu để hiển thị</div>;
   }
 
-  // Filter the data
-  const filteredData = data.filter(item => {
-    if (!filterValue) return true;
-    
-    const searchTerm = filterValue.toLowerCase();
-    if (filterType === "period") {
-      return item.period.toString().includes(searchTerm);
-    }
-    
-    // Search all fields
-    return (
-      item.period.toString().includes(searchTerm) ||
-      item.payment.toString().includes(searchTerm) ||
-      item.principal.toString().includes(searchTerm) ||
-      item.interest.toString().includes(searchTerm) ||
-      item.remainingBalance.toString().includes(searchTerm)
-    );
-  });
-
   // Pagination
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
 
   const goToPage = (page: number) => {
     if (page < 1) page = 1;
@@ -60,31 +37,6 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
         <p className="text-xs sm:text-sm text-center text-muted-foreground">
           Lịch thanh toán chi tiết cho khoản vay của bạn
         </p>
-      </div>
-
-      <div className="flex flex-col gap-2 mb-3 sm:mb-4">
-        <div className="relative w-full">
-          <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-          <Input
-            placeholder="Tìm kiếm..."
-            className="pl-7 sm:pl-9 h-8 sm:h-10 text-xs sm:text-sm"
-            value={filterValue}
-            onChange={(e) => setFilterValue(e.target.value)}
-          />
-        </div>
-        
-        <Select
-          value={filterType}
-          onValueChange={(value) => setFilterType(value as "period" | "all")}
-        >
-          <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm w-full">
-            <SelectValue placeholder="Lọc theo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tất Cả Trường</SelectItem>
-            <SelectItem value="period">Chỉ Kỳ Hạn</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
       
       <div className="rounded-md border overflow-x-auto">
@@ -129,8 +81,8 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-3 sm:mt-4 gap-2">
           <div className="text-xs text-muted-foreground text-center sm:text-left">
             {isMobile ? 
-              `${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredData.length)} / ${filteredData.length}` :
-              `Hiển thị ${startIndex + 1} đến ${Math.min(startIndex + itemsPerPage, filteredData.length)} trong tổng số ${filteredData.length} mục`
+              `${startIndex + 1}-${Math.min(startIndex + itemsPerPage, data.length)} / ${data.length}` :
+              `Hiển thị ${startIndex + 1} đến ${Math.min(startIndex + itemsPerPage, data.length)} trong tổng số ${data.length} mục`
             }
           </div>
           <div className="flex items-center justify-center sm:justify-end gap-2">
