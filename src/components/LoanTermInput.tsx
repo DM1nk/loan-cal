@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -126,13 +127,13 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange 
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <Label htmlFor="loanTerm" className="text-sm font-medium flex items-center gap-1 sm:text-base">
-          Thời hạn vay
+          Loan Term
           <Tooltip>
             <TooltipTrigger asChild>
               <InfoIcon className="h-3 w-3 text-muted-foreground cursor-help sm:h-4 sm:w-4" />
             </TooltipTrigger>
             <TooltipContent side="top">
-              <p className="text-xs sm:text-sm">Thời gian vay</p>
+              <p className="text-xs sm:text-sm">Length of the loan</p>
             </TooltipContent>
           </Tooltip>
         </Label>
@@ -145,7 +146,7 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange 
           className="h-6 px-2 text-xs text-primary sm:text-sm"
           disabled={loanTermMonths < 12 && displayMode === "months"}
         >
-          {displayMode === "years" ? "Hiển thị theo tháng" : "Hiển thị theo năm"}
+          {displayMode === "years" ? "Show in months" : "Show in years"}
         </Button>
       </div>
       
@@ -168,7 +169,7 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange 
             className="h-10 text-center font-medium text-primary sm:h-12 sm:text-lg"
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-            {displayMode === "years" ? "năm" : "tháng"}
+            {displayMode}
           </span>
         </div>
         
@@ -192,8 +193,8 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange 
         className="input-transition py-2"
       />
       <div className="flex justify-between text-xs text-muted-foreground">
-        <span>{sliderProps.min} {sliderProps.label === "Year" ? "năm" : sliderProps.label === "Years" ? "năm" : sliderProps.label === "Month" ? "tháng" : "tháng"}</span>
-        <span>{sliderProps.max} {sliderProps.label === "Year" ? "năm" : sliderProps.label === "Years" ? "năm" : sliderProps.label === "Month" ? "tháng" : "tháng"}</span>
+        <span>{sliderProps.min} {sliderProps.label}</span>
+        <span>{sliderProps.max} {sliderProps.label}</span>
       </div>
     </div>
   );
