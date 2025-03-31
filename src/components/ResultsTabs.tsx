@@ -104,7 +104,7 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
   );
   
   return (
-    <div className="card-gradient rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-8 animate-scale-in w-full">
+    <div className="card-gradient rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-8 animate-scale-in">
       <h2 className="text-lg sm:text-2xl font-bold text-center mb-3 sm:mb-6">Phân Tích Khoản Vay</h2>
       
       {renderLoanTypeSelector()}
@@ -128,10 +128,10 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
             <span>{isMobile ? "Lịch Trình" : "Lịch Trình Thanh Toán"}</span>
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="chart" className="tab-transition w-full min-w-[300px]">
+        <TabsContent value="chart" className="tab-transition">
           <PaymentChart data={loanResults.paymentSchedule} />
         </TabsContent>
-        <TabsContent value="table" className="tab-transition overflow-hidden w-full">
+        <TabsContent value="table" className="tab-transition overflow-hidden">
           <PaymentTable data={loanResults.paymentSchedule} />
         </TabsContent>
       </Tabs>
