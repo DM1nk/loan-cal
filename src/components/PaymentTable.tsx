@@ -107,30 +107,30 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
             <Table>
               <TableHeader className="bg-muted/50 sticky top-0 z-10">
                 <TableRow>
-                  <TableHead className="text-center w-[15%] text-xs py-1.5 px-1">Kỳ</TableHead>
-                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Thanh Toán</TableHead>
-                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Lãi</TableHead>
-                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Gốc</TableHead>
-                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Dư Nợ</TableHead>
+                  <TableHead className="text-center w-[15%] text-xs py-1.5 px-1 whitespace-nowrap">Kỳ</TableHead>
+                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1 whitespace-nowrap">Thanh Toán</TableHead>
+                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1 whitespace-nowrap">Lãi</TableHead>
+                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1 whitespace-nowrap">Gốc</TableHead>
+                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1 whitespace-nowrap">Dư Nợ</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedData.length > 0 ? (
                   paginatedData.map((item) => (
                     <TableRow key={item.period} className="hover:bg-muted/30 transition-colors">
-                      <TableCell className="text-center font-medium text-xs py-1 px-0.5">
+                      <TableCell className="text-center font-medium text-xs py-1 px-0.5 whitespace-nowrap">
                         {item.period}
                       </TableCell>
-                      <TableCell className="text-center text-xs py-1 px-0.5">
+                      <TableCell className="text-center text-xs py-1 px-0.5 whitespace-nowrap">
                         {formatCurrency(item.payment, isMobile)}
                       </TableCell>
-                      <TableCell className="text-center text-xs py-1 px-0.5">
+                      <TableCell className="text-center text-xs py-1 px-0.5 whitespace-nowrap">
                         {formatCurrency(item.interest, isMobile)}
                       </TableCell>
-                      <TableCell className="text-center text-xs py-1 px-0.5">
+                      <TableCell className="text-center text-xs py-1 px-0.5 whitespace-nowrap">
                         {formatCurrency(item.principal, isMobile)}
                       </TableCell>
-                      <TableCell className="text-center text-xs py-1 px-0.5">
+                      <TableCell className="text-center text-xs py-1 px-0.5 whitespace-nowrap">
                         {formatCurrency(item.remainingBalance, isMobile)}
                       </TableCell>
                     </TableRow>
