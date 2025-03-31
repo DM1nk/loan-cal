@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { PaymentDetail, formatCurrency } from '../utils/loanCalculations';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import PaymentSearch from './PaymentSearch';
 
 interface PaymentTableProps {
   data: PaymentDetail[];
@@ -32,11 +32,15 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
     setCurrentPage(1); // Reset to first page when search changes
   }, [searchTerm, data]);
 
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+  };
+
   if (!data || data.length === 0) {
     return <div className="flex items-center justify-center h-64">Không có dữ liệu để hiển thị</div>;
   }
 
-  // Pagination
+  // Pagination logic
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
@@ -45,6 +49,44 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
     setCurrentPage(page);
+  };
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+    
+    return (
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 gap-2">
+        <div className="text-xs text-muted-foreground text-center sm:text-left">
+          {isMobile ? 
+            `${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredData.length)} / ${filteredData.length}` :
+            `Hiển thị ${startIndex + 1} đến ${Math.min(startIndex + itemsPerPage, filteredData.length)} trong tổng số ${filteredData.length} mục`
+          }
+        </div>
+        <div className="flex items-center justify-center sm:justify-end gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="h-8 w-8 p-0 sm:h-9 sm:w-9"
+          >
+            <ChevronLeftIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+          </Button>
+          <span className="text-xs sm:text-sm">
+            {currentPage} / {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="h-8 w-8 p-0 sm:h-9 sm:w-9"
+          >
+            <ChevronRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+          </Button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -57,18 +99,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
           </p>
         </div>
         
-        <div className="mb-4 px-4 flex items-center">
-          <div className="relative w-full max-w-[200px]">
-            <SearchIcon className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Tìm kỳ hạn..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8"
-            />
-          </div>
-        </div>
+        <PaymentSearch searchTerm={searchTerm} onSearchChange={handleSearchChange} />
         
         <div className="rounded-md border overflow-x-auto">
           <Table>
@@ -116,39 +147,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
           </Table>
         </div>
 
-        {totalPages > 1 && (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 gap-2">
-            <div className="text-xs text-muted-foreground text-center sm:text-left">
-              {isMobile ? 
-                `${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredData.length)} / ${filteredData.length}` :
-                `Hiển thị ${startIndex + 1} đến ${Math.min(startIndex + itemsPerPage, filteredData.length)} trong tổng số ${filteredData.length} mục`
-              }
-            </div>
-            <div className="flex items-center justify-center sm:justify-end gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="h-8 w-8 p-0 sm:h-9 sm:w-9"
-              >
-                <ChevronLeftIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-              <span className="text-xs sm:text-sm">
-                {currentPage} / {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="h-8 w-8 p-0 sm:h-9 sm:w-9"
-              >
-                <ChevronRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-            </div>
-          </div>
-        )}
+        {renderPagination()}
       </CardContent>
     </Card>
   );

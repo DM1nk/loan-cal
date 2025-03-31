@@ -2,10 +2,17 @@
 import React from 'react';
 import LoanCalculator from '../components/LoanCalculator';
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Card, CardContent } from "@/components/ui/card";
+import CategoryPill from '@/components/CategoryPill';
 
 const Index = () => {
   const isMobile = useIsMobile();
+  
+  const categories = [
+    { text: "Vay Mua Nhà", bgColor: "bg-blue-100", textColor: "text-blue-800" },
+    { text: "Vay Mua Xe", bgColor: "bg-green-100", textColor: "text-green-800" },
+    { text: "Vay Tiêu Dùng", bgColor: "bg-purple-100", textColor: "text-purple-800" },
+    { text: "Vay Học Tập", bgColor: "bg-amber-100", textColor: "text-amber-800" },
+  ];
   
   return (
     <div className="min-h-screen py-4 sm:py-16 px-2 sm:px-4 bg-gradient-to-b from-blue-50 to-white">
@@ -20,18 +27,14 @@ const Index = () => {
           
           {!isMobile && (
             <div className="flex flex-wrap justify-center gap-3 mt-6">
-              <Card className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border-none shadow-sm hover:shadow-md transition-all duration-200">
-                <CardContent className="p-0">Vay Mua Nhà</CardContent>
-              </Card>
-              <Card className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800 border-none shadow-sm hover:shadow-md transition-all duration-200">
-                <CardContent className="p-0">Vay Mua Xe</CardContent>
-              </Card>
-              <Card className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-purple-100 text-purple-800 border-none shadow-sm hover:shadow-md transition-all duration-200">
-                <CardContent className="p-0">Vay Tiêu Dùng</CardContent>
-              </Card>
-              <Card className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-amber-100 text-amber-800 border-none shadow-sm hover:shadow-md transition-all duration-200">
-                <CardContent className="p-0">Vay Học Tập</CardContent>
-              </Card>
+              {categories.map((category, index) => (
+                <CategoryPill 
+                  key={index}
+                  text={category.text}
+                  bgColor={category.bgColor}
+                  textColor={category.textColor}
+                />
+              ))}
             </div>
           )}
         </div>
