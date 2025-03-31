@@ -7,6 +7,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Card, CardContent } from "@/components/ui/card";
 import PaymentSearch from './PaymentSearch';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PaymentTableProps {
   data: PaymentDetail[];
@@ -90,7 +91,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
   };
 
   return (
-    <Card className="w-full animate-fade-in overflow-auto">
+    <Card className="w-full animate-fade-in">
       <CardContent className="p-0">
         <div className="p-2 sm:p-4 mb-2 sm:mb-4">
           <h3 className="text-base sm:text-lg font-medium text-center">Lịch Trả Nợ</h3>
@@ -101,51 +102,50 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ data }) => {
         
         <PaymentSearch searchTerm={searchTerm} onSearchChange={handleSearchChange} />
         
-        <div className="rounded-md border overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-muted/50">
-              <TableRow>
-                <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Kỳ</TableHead>
-                <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Thanh Toán</TableHead>
-                <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Lãi</TableHead>
-                <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Gốc</TableHead>
-                <TableHead className="text-center text-xs sm:text-sm py-2 px-1 sm:px-4">Dư Nợ</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedData.length > 0 ? (
-                paginatedData.map((item) => (
-                  <TableRow key={item.period} className="hover:bg-muted/30 transition-colors">
-                    <TableCell className="text-center font-medium text-xs sm:text-sm py-1.5 px-1 sm:px-4">
-                      {item.period}
-                    </TableCell>
-                    <TableCell className="text-center text-xs sm:text-sm py-1.5 px-1 sm:px-4">
-                      {formatCurrency(item.payment)}
-                    </TableCell>
-                    <TableCell className="text-center text-xs sm:text-sm py-1.5 px-1 sm:px-4">
-                      {formatCurrency(item.interest)}
-                    </TableCell>
-                    <TableCell className="text-center text-xs sm:text-sm py-1.5 px-1 sm:px-4">
-                      {formatCurrency(item.principal)}
-                    </TableCell>
-                    <TableCell className="text-center text-xs sm:text-sm py-1.5 px-1 sm:px-4">
-                      {isMobile ? 
-                        formatCurrency(item.remainingBalance, true) : 
-                        formatCurrency(item.remainingBalance)
-                      }
+        <ScrollArea className="h-auto max-h-[60vh]">
+          <div className="border rounded-md">
+            <Table>
+              <TableHeader className="bg-muted/50 sticky top-0 z-10">
+                <TableRow>
+                  <TableHead className="text-center w-[15%] text-xs py-1.5 px-1">Kỳ</TableHead>
+                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Thanh Toán</TableHead>
+                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Lãi</TableHead>
+                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Gốc</TableHead>
+                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Dư Nợ</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((item) => (
+                    <TableRow key={item.period} className="hover:bg-muted/30 transition-colors">
+                      <TableCell className="text-center font-medium text-xs py-1 px-0.5">
+                        {item.period}
+                      </TableCell>
+                      <TableCell className="text-center text-xs py-1 px-0.5">
+                        {formatCurrency(item.payment, isMobile)}
+                      </TableCell>
+                      <TableCell className="text-center text-xs py-1 px-0.5">
+                        {formatCurrency(item.interest, isMobile)}
+                      </TableCell>
+                      <TableCell className="text-center text-xs py-1 px-0.5">
+                        {formatCurrency(item.principal, isMobile)}
+                      </TableCell>
+                      <TableCell className="text-center text-xs py-1 px-0.5">
+                        {formatCurrency(item.remainingBalance, isMobile)}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-6">
+                      Không tìm thấy kỳ hạn phù hợp
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6">
-                    Không tìm thấy kỳ hạn phù hợp
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </ScrollArea>
 
         {renderPagination()}
       </CardContent>
