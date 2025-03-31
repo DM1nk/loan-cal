@@ -115,34 +115,30 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
         <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-medium text-center`}>Payment Breakdown</h3>
       </div>
       
-      <div className={`w-full ${isMobile ? 'h-[260px]' : 'h-[350px]'}`}>
+      <div className="w-full h-[350px] min-w-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
-            margin={isMobile ? 
-              { top: 10, right: 5, left: 0, bottom: 40 } : 
-              { top: 20, right: 30, left: 20, bottom: 50 }}
+            margin={{ top: 20, right: 20, left: 20, bottom: 50 }}
             barGap={0}
-            barCategoryGap={isMobile ? "10%" : "20%"}
+            barCategoryGap="20%"
           >
             <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
             <XAxis 
               dataKey="period" 
-              tick={{ fontSize: isMobile ? 10 : 12 }}
-              height={isMobile ? 30 : 40}
-              interval={isMobile ? 0 : 'preserveStartEnd'}
-              tickMargin={isMobile ? 5 : 10}
+              tick={{ fontSize: 12 }}
+              height={40}
+              interval="preserveStartEnd"
+              tickMargin={10}
             />
             <YAxis 
-              width={isMobile ? 35 : 45}
-              tick={{ fontSize: isMobile ? 10 : 12 }}
+              width={45}
+              tick={{ fontSize: 12 }}
               tickFormatter={(value) => {
-                if (isMobile) {
-                  // Simplify Y-axis formatting on mobile
-                  if (value >= 1000) {
-                    return `${(value/1000).toFixed(0)}K`;
-                  }
-                  return value;
+                if (value >= 1000000) {
+                  return `${(value/1000000).toFixed(1)}M`;
+                } else if (value >= 1000) {
+                  return `${(value/1000).toFixed(0)}K`;
                 }
                 return value;
               }}
@@ -157,17 +153,14 @@ const PaymentChart: React.FC<PaymentChartProps> = ({ data }) => {
                 border: 'none',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                padding: isMobile ? '4px 8px' : '8px 12px',
-                fontSize: isMobile ? '11px' : '12px'
-              }}
-              wrapperStyle={{
-                fontSize: isMobile ? '11px' : '12px'
+                padding: '8px 12px',
+                fontSize: '12px'
               }}
             />
             <Legend 
               wrapperStyle={{
-                fontSize: isMobile ? '10px' : '12px',
-                paddingTop: isMobile ? '5px' : '10px'
+                fontSize: '12px',
+                paddingTop: '10px'
               }}
             />
             <Bar 
