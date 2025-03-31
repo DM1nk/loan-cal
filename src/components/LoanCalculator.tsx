@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { CalculatorIcon, RefreshCwIcon, InfoIcon, DollarSignIcon, PercentIcon } from 'lucide-react';
+import { CalculatorIcon, RefreshCwIcon, InfoIcon, BanknoteIcon, PercentIcon } from 'lucide-react';
 import { calculateLoan, LoanType, LoanSummary } from '../utils/loanCalculations';
 import ResultsTabs from './ResultsTabs';
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -154,7 +154,7 @@ const LoanCalculator: React.FC = () => {
                     </Tooltip>
                   </Label>
                   <div className="relative">
-                    <DollarSignIcon className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <BanknoteIcon className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
                       id="loanAmount"
                       type="text"
@@ -217,7 +217,7 @@ const LoanCalculator: React.FC = () => {
                       </Tooltip>
                     </Label>
                     <div className="relative">
-                      <DollarSignIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                      <BanknoteIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                       <Input
                         id="loanAmount"
                         type="text"
