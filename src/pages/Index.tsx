@@ -2,6 +2,7 @@
 import React from 'react';
 import LoanCalculator from '../components/LoanCalculator';
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Index = () => {
   const isMobile = useIsMobile();
@@ -18,19 +19,19 @@ const Index = () => {
           </p>
           
           {!isMobile && (
-            <div className="flex flex-wrap justify-center gap-2 mt-3 sm:mt-4">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                Vay Mua Nhà
-              </span>
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Vay Mua Xe
-              </span>
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                Vay Tiêu Dùng
-              </span>
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                Vay Học Tập
-              </span>
+            <div className="flex flex-wrap justify-center gap-3 mt-6">
+              <Card className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border-none shadow-sm hover:shadow-md transition-all duration-200">
+                <CardContent className="p-0">Vay Mua Nhà</CardContent>
+              </Card>
+              <Card className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800 border-none shadow-sm hover:shadow-md transition-all duration-200">
+                <CardContent className="p-0">Vay Mua Xe</CardContent>
+              </Card>
+              <Card className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-purple-100 text-purple-800 border-none shadow-sm hover:shadow-md transition-all duration-200">
+                <CardContent className="p-0">Vay Tiêu Dùng</CardContent>
+              </Card>
+              <Card className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-amber-100 text-amber-800 border-none shadow-sm hover:shadow-md transition-all duration-200">
+                <CardContent className="p-0">Vay Học Tập</CardContent>
+              </Card>
             </div>
           )}
         </div>

@@ -1,14 +1,16 @@
+
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoanSummary, formatCurrency, LoanType } from '../utils/loanCalculations';
 import PaymentChart from './PaymentChart';
 import PaymentTable from './PaymentTable';
-import { ChartBarIcon, TableIcon, Building2Icon, BarChart3Icon } from 'lucide-react';
+import { ChartBarIcon, TableIcon, Building2Icon, BarChart3Icon, WalletIcon } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { InfoIcon } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
 
 interface ResultsTabsProps {
   loanResults: LoanSummary | null;
@@ -27,13 +29,6 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
     return null;
   }
 
-  // Loan type descriptions for tooltips
-  const loanTypeDescriptions = {
-    evenDistribution: "Khoản thanh toán hàng tháng bằng nhau trong suốt thời hạn vay (trả góp truyền thống).",
-    fixedPrincipal: "Khoản thanh toán gốc giữ nguyên, tổng khoản thanh toán giảm dần theo thời gian.",
-    fixedInterest: "Khoản thanh toán lãi giữ nguyên, tổng khoản thanh toán không đổi."
-  };
-
   const handleLoanTypeChange = (value: string) => {
     onLoanTypeChange(value as LoanType);
   };
@@ -42,7 +37,7 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
     <div className="card-gradient rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-8 animate-scale-in">
       <h2 className="text-lg sm:text-2xl font-bold text-center mb-3 sm:mb-6">Phân Tích Khoản Vay</h2>
       
-      {/* Loan Type Selection - Now in the results section */}
+      {/* Loan Type Selection */}
       <div className="mb-4 sm:mb-6">
         <div className="flex items-center gap-1 mb-1">
           <Label htmlFor="resultLoanType" className="text-sm sm:text-base font-medium">Loại Khoản Vay</Label>
@@ -90,22 +85,36 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-6 mb-6 sm:mb-8">
-          <div className="p-3 sm:p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center hover:shadow-md transition-all duration-200">
-            <div className="mb-1 sm:mb-2">
-              <Building2Icon className="h-8 w-8 sm:h-10 sm:w-10 text-primary/80 mb-1" />
-            </div>
-            <h3 className="text-xs sm:text-sm font-medium text-gray-500 mb-1">Tổng Thanh Toán</h3>
-            <p className="text-lg sm:text-3xl font-bold text-primary">{formatCurrency(loanResults.totalPayment)}</p>
-          </div>
+        <div className="grid grid-cols-3 gap-6 mb-8">
+          <Card className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200">
+            <CardContent className="p-0 flex flex-col items-center justify-center">
+              <div className="mb-2">
+                <Building2Icon className="h-10 w-10 text-primary/80 mb-1" />
+              </div>
+              <h3 className="text-sm font-medium text-gray-500 mb-1">Tổng Thanh Toán</h3>
+              <p className="text-2xl font-bold text-primary">{formatCurrency(loanResults.totalPayment)}</p>
+            </CardContent>
+          </Card>
           
-          <div className="p-3 sm:p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm flex flex-col items-center justify-center hover:shadow-md transition-all duration-200">
-            <div className="mb-1 sm:mb-2">
-              <BarChart3Icon className="h-8 w-8 sm:h-10 sm:w-10 text-primary/80 mb-1" />
-            </div>
-            <h3 className="text-xs sm:text-sm font-medium text-gray-500 mb-1">Tổng Lãi</h3>
-            <p className="text-lg sm:text-3xl font-bold text-primary">{formatCurrency(loanResults.totalInterest)}</p>
-          </div>
+          <Card className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200">
+            <CardContent className="p-0 flex flex-col items-center justify-center">
+              <div className="mb-2">
+                <BarChart3Icon className="h-10 w-10 text-primary/80 mb-1" />
+              </div>
+              <h3 className="text-sm font-medium text-gray-500 mb-1">Tổng Lãi</h3>
+              <p className="text-2xl font-bold text-primary">{formatCurrency(loanResults.totalInterest)}</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="p-6 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200">
+            <CardContent className="p-0 flex flex-col items-center justify-center">
+              <div className="mb-2">
+                <WalletIcon className="h-10 w-10 text-primary/80 mb-1" />
+              </div>
+              <h3 className="text-sm font-medium text-gray-500 mb-1">Khoản Vay Gốc</h3>
+              <p className="text-2xl font-bold text-primary">{formatCurrency(loanResults.totalPayment - loanResults.totalInterest)}</p>
+            </CardContent>
+          </Card>
         </div>
       )}
       
