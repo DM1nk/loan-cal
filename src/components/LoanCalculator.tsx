@@ -153,7 +153,7 @@ const LoanCalculator: React.FC = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="interestRate" className="text-sm font-medium flex items-center gap-1">
-                    Lãi Suất (%)
+                    Lãi Suất (%/năm)
                     <Tooltip>
                       <TooltipTrigger asChild>
                         
@@ -181,9 +181,7 @@ const LoanCalculator: React.FC = () => {
                     <Label htmlFor="loanAmount" className="text-base font-medium flex items-center gap-1">
                       Số Tiền Vay
                       <Tooltip>
-                        <TooltipTrigger asChild>
-                          <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
+
                         <TooltipContent>
                           <p>Tổng số tiền bạn muốn vay</p>
                         </TooltipContent>
@@ -199,11 +197,9 @@ const LoanCalculator: React.FC = () => {
                 <div className="space-y-5">
                   <div className="space-y-3">
                     <Label htmlFor="interestRate" className="text-base font-medium flex items-center gap-1">
-                      Lãi Suất (%)
+                      Lãi Suất (%/năm)
                       <Tooltip>
-                        <TooltipTrigger asChild>
-                          <InfoIcon className="h-4 w-4 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
+
                         <TooltipContent>
                           <p>Lãi suất hàng năm cho khoản vay này</p>
                         </TooltipContent>

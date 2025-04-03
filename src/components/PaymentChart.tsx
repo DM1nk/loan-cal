@@ -61,27 +61,27 @@ const PaymentChart: React.FC<PaymentChartProps> = ({
       if (totalMonths <= 12) {
         // For loans under 1 year, show as "M1", "M2", etc.
         if (item.period === 1) {
-          periodLabel = "Start";
+          periodLabel = "Bắt Đầu";
         } else if (item.period === data.length) {
-          periodLabel = "End";
+          periodLabel = "Kết Thúc";
         } else {
-          periodLabel = `M${item.period}`;
+          periodLabel = `Tháng ${item.period}`;
         }
       } else {
         // For longer loans
         if (item.period === 1) {
-          periodLabel = "Start";
+          periodLabel = "Bắt Đầu";
         } else if (item.period === data.length) {
-          periodLabel = "End";
+          periodLabel = "Kết Thúc";
         } else if (item.period % 12 === 0) {
-          periodLabel = `Y${item.period / 12}`;
+          periodLabel = `Năm ${item.period / 12}`;
         } else {
           const year = Math.floor(item.period / 12);
           const month = item.period % 12;
           if (year === 0) {
-            periodLabel = `M${month}`;
+            periodLabel = `Tháng ${month}`;
           } else {
-            periodLabel = `Y${year + 1}`;
+            periodLabel = `Năm ${year + 1}`;
           }
         }
       }
@@ -137,7 +137,7 @@ const PaymentChart: React.FC<PaymentChartProps> = ({
             return value;
           }} />
             <Tooltip formatter={(value, name) => {
-            const label = name === "Principal" ? "Principal" : "Interest";
+            const label = name === "Principal" ? "Gốc" : "Lãi";
             return [`$${value.toLocaleString()}`, label];
           }} contentStyle={{
             borderRadius: 8,
@@ -153,8 +153,8 @@ const PaymentChart: React.FC<PaymentChartProps> = ({
             fontSize: isMobile ? '10px' : '12px',
             paddingTop: isMobile ? '5px' : '10px'
           }} />
-            <Bar name="Principal" dataKey="principal" stackId="a" fill={COLORS.principal} radius={[4, 4, 0, 0]} />
-            <Bar name="Interest" dataKey="interest" stackId="a" fill={COLORS.interest} radius={[4, 4, 0, 0]} />
+            <Bar name="Gốc" dataKey="principal" stackId="a" fill={COLORS.principal} radius={[4, 4, 0, 0]} />
+            <Bar name="Lãi" dataKey="interest" stackId="a" fill={COLORS.interest} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

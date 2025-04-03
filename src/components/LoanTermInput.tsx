@@ -21,7 +21,7 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({
 
   // Update input when external term changes
   useEffect(() => {
-    if (loanTermMonths < 12) {
+    if (loanTermMonths <= 12) {
       setDisplayMode("months");
       setInputValue(loanTermMonths.toString());
     } else {
@@ -56,7 +56,7 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({
       setInputValue(newYears.toString());
     } else {
       // In months mode, we cap at 11 months (since 12+ should show as years)
-      const newMonths = Math.max(1, Math.min(11, loanTermMonths + amount));
+      const newMonths = Math.max(1, Math.min(12, loanTermMonths + amount));
       onChange(newMonths);
       setInputValue(newMonths.toString());
     }
@@ -89,7 +89,7 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({
     } else {
       return {
         min: 1,
-        max: 11,
+        max: 12,
         // Max 11 months (12+ becomes 1 year)
         step: 1,
         value: loanTermMonths,

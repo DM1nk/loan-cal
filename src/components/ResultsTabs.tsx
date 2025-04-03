@@ -50,7 +50,7 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
           <SelectValue placeholder="Chọn loại khoản vay" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="evenDistribution">Phân Bổ Đều (Khoản Thanh Toán Bằng Nhau)</SelectItem>
+          <SelectItem value="evenDistribution">Phân Bổ Đều</SelectItem>
           <SelectItem value="fixedPrincipal">Gốc Cố Định</SelectItem>
           <SelectItem value="fixedInterest">Lãi Cố Định</SelectItem>
         </SelectContent>
@@ -76,11 +76,11 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
         <TabsList className="grid w-full grid-cols-2 mb-3 sm:mb-6 p-1 bg-muted/50 backdrop-blur-sm rounded-lg sm:rounded-xl">
           <TabsTrigger value="chart" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-base p-1.5 sm:p-4 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200">
             <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>{isMobile ? "Biểu Đồ" : "Lộ Trình Thanh Toán"}</span>
+            <span>{isMobile ? "Biểu Đồ" : "Biểu Đồ Trả Nợ"}</span>
           </TabsTrigger>
           <TabsTrigger value="table" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-base p-1.5 sm:p-4 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200">
             <TableIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>{isMobile ? "Lịch Trình" : "Lịch Trình Thanh Toán"}</span>
+            <span>{isMobile ? "Lịch Trình" : "Lịch Trình Trả Nợ"}</span>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="chart" className="tab-transition">
