@@ -25,9 +25,7 @@ const Index = () => {
       <div className="max-w-screen-xl mx-auto">
         <div className="text-center mb-4 sm:mb-12 animate-slide-down">
           <h1 className="text-2xl md:text-5xl font-bold mb-2 sm:mb-4 tracking-tight bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 bg-clip-text text-transparent">Công Cụ Tính Khoản Vay</h1>
-          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Tính toán khoản thanh toán với các phương pháp trả nợ khác nhau
-          </p>
+          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">Tính toán khoản lãi suất khoản vay và lịch trình thanh toán </p>
           
           {!isMobile && <div className="flex flex-wrap justify-center gap-3 mt-6">
               {categories.map((category, index) => <CategoryPill key={index} text={category.text} bgColor={category.bgColor} textColor={category.textColor} />)}
@@ -37,8 +35,8 @@ const Index = () => {
         <LoanCalculator />
         
         <div className="mt-4 sm:mt-16 text-center text-xs sm:text-sm text-muted-foreground animate-fade-in">
-          <p className="mb-2">Máy tính này cung cấp ước tính chỉ mang tính chất tham khảo.</p>
-          <p>Các điều khoản và khoản thanh toán thực tế có thể thay đổi dựa trên chính sách của người cho vay và tình hình tài chính của bạn.</p>
+          
+          
         </div>
       </div>
     </div>;
