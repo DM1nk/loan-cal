@@ -147,18 +147,21 @@ const PaymentChart: React.FC<PaymentChartProps> = ({
                 }} 
                 tickFormatter={value => {
                   if (isMobile) {
-                    if (value >= 1000) {
+                    if (value >= 1000000) {
+                      return `${(value / 1000000).toFixed(1)}Tr`;
+                    } else if (value >= 1000) {
                       return `${(value / 1000).toFixed(0)}K`;
                     }
-                    return value;
+                    return value.toLocaleString('vi-VN').replace(/,/g, '.').replace(/\./g, ',');
                   }
-                  return value;
+                  return value.toLocaleString('vi-VN').replace(/,/g, '.').replace(/\./g, ',');
                 }}
               />
               <Tooltip 
                 formatter={(value, name) => {
                   const label = name === "Principal" ? "Gốc" : "Lãi";
-                  return [`$${value.toLocaleString()}`, label];
+                  const formattedValue = value.toLocaleString('vi-VN').replace(/,/g, '.').replace(/\./g, ',');
+                  return [`${formattedValue} ₫`, label];
                 }} 
                 contentStyle={{
                   borderRadius: 8,

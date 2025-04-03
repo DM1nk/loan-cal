@@ -1,4 +1,3 @@
-
 export type LoanType = 'fixedPrincipal' | 'fixedInterest' | 'evenDistribution';
 
 export interface PaymentDetail {
@@ -138,15 +137,18 @@ export const formatCurrency = (value: number | string, compact: boolean = false)
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
-      notation: 'compact',
-      maximumFractionDigits: 1
-    }).format(numericValue);
+      useGrouping: true,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(numericValue).replace(/,/g, '.').replace(/\./g, ',');
   }
   
   // Standard format for desktop or smaller numbers
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',
-    maximumFractionDigits: 0
-  }).format(numericValue);
+    maximumFractionDigits: 0,
+    useGrouping: true,
+    minimumFractionDigits: 0
+  }).format(numericValue).replace(/,/g, '.').replace(/\./g, ',');
 };
