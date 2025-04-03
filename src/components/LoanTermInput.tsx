@@ -5,24 +5,19 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { InfoIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
 interface LoanTermInputProps {
   loanTermMonths: number;
   onChange: (months: number) => void;
 }
-
-const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange }) => {
+const LoanTermInput: React.FC<LoanTermInputProps> = ({
+  loanTermMonths,
+  onChange
+}) => {
   // Auto decide display mode based on number of months
-  const [displayMode, setDisplayMode] = useState<"years" | "months">(
-    loanTermMonths >= 12 ? "years" : "months"
-  );
-  
+  const [displayMode, setDisplayMode] = useState<"years" | "months">(loanTermMonths >= 12 ? "years" : "months");
+
   // Calculate display value based on current mode
-  const [inputValue, setInputValue] = useState(() => 
-    displayMode === "years" 
-      ? Math.round(loanTermMonths / 12).toString()
-      : loanTermMonths.toString()
-  );
+  const [inputValue, setInputValue] = useState(() => displayMode === "years" ? Math.round(loanTermMonths / 12).toString() : loanTermMonths.toString());
 
   // Update input when external term changes
   useEffect(() => {
@@ -42,7 +37,6 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
     setInputValue(value);
-    
     const numValue = parseInt(value, 10);
     if (!isNaN(numValue) && numValue > 0) {
       if (displayMode === "years") {
@@ -95,14 +89,14 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange 
     } else {
       return {
         min: 1,
-        max: 11, // Max 11 months (12+ becomes 1 year)
+        max: 11,
+        // Max 11 months (12+ becomes 1 year)
         step: 1,
         value: loanTermMonths,
         label: loanTermMonths === 1 ? 'Month' : 'Months'
       };
     }
   };
-
   const sliderProps = getSliderProps();
 
   // Auto-adjust display mode if value crosses threshold
@@ -113,7 +107,7 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange 
     } else {
       onChange(value[0]);
       setInputValue(value[0].toString());
-      
+
       // Auto switch to years if user slides to 12+ months
       if (value[0] >= 12 && displayMode === "months") {
         setDisplayMode("years");
@@ -121,15 +115,13 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange 
       }
     }
   };
-
-  return (
-    <div className="space-y-2">
+  return <div className="space-y-2">
       <div className="flex justify-between items-center">
         <Label htmlFor="loanTerm" className="text-sm font-medium flex items-center gap-1 sm:text-base">
           Thời hạn vay
           <Tooltip>
             <TooltipTrigger asChild>
-              <InfoIcon className="h-3 w-3 text-muted-foreground cursor-help sm:h-4 sm:w-4" />
+              
             </TooltipTrigger>
             <TooltipContent side="top">
               <p className="text-xs sm:text-sm">Thời gian vay</p>
@@ -138,65 +130,33 @@ const LoanTermInput: React.FC<LoanTermInputProps> = ({ loanTermMonths, onChange 
         </Label>
         
         {/* Toggle button between years/months */}
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={toggleDisplayMode} 
-          className="h-6 px-2 text-xs text-primary sm:text-sm"
-          disabled={loanTermMonths < 12 && displayMode === "months"}
-        >
+        <Button variant="ghost" size="sm" onClick={toggleDisplayMode} className="h-6 px-2 text-xs text-primary sm:text-sm" disabled={loanTermMonths < 12 && displayMode === "months"}>
           {displayMode === "years" ? "Hiển thị theo tháng" : "Hiển thị theo năm"}
         </Button>
       </div>
       
       <div className="flex items-center gap-2 mb-2">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8 p-0 rounded-full sm:h-10 sm:w-10"
-          onClick={() => adjustTerm(-1)}
-        >
+        <Button variant="outline" size="icon" className="h-8 w-8 p-0 rounded-full sm:h-10 sm:w-10" onClick={() => adjustTerm(-1)}>
           <MinusIcon className="h-3 w-3 sm:h-4 sm:w-4" />
         </Button>
         
         <div className="relative flex-1">
-          <Input
-            id="termInput"
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            className="h-10 text-center font-medium text-primary sm:h-12 sm:text-lg"
-          />
+          <Input id="termInput" type="text" value={inputValue} onChange={handleInputChange} className="h-10 text-center font-medium text-primary sm:h-12 sm:text-lg" />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
             {displayMode === "years" ? "năm" : "tháng"}
           </span>
         </div>
         
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8 p-0 rounded-full sm:h-10 sm:w-10"
-          onClick={() => adjustTerm(1)}
-        >
+        <Button variant="outline" size="icon" className="h-8 w-8 p-0 rounded-full sm:h-10 sm:w-10" onClick={() => adjustTerm(1)}>
           <PlusIcon className="h-3 w-3 sm:h-4 sm:w-4" />
         </Button>
       </div>
       
-      <Slider
-        id="loanTerm"
-        value={[sliderProps.value]}
-        max={sliderProps.max}
-        min={sliderProps.min}
-        step={sliderProps.step}
-        onValueChange={handleSliderChange}
-        className="input-transition py-2"
-      />
+      <Slider id="loanTerm" value={[sliderProps.value]} max={sliderProps.max} min={sliderProps.min} step={sliderProps.step} onValueChange={handleSliderChange} className="input-transition py-2" />
       <div className="flex justify-between text-xs text-muted-foreground">
         <span>{sliderProps.min} {sliderProps.label === "Year" ? "năm" : sliderProps.label === "Years" ? "năm" : sliderProps.label === "Month" ? "tháng" : "tháng"}</span>
         <span>{sliderProps.max} {sliderProps.label === "Year" ? "năm" : sliderProps.label === "Years" ? "năm" : sliderProps.label === "Month" ? "tháng" : "tháng"}</span>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default LoanTermInput;
