@@ -1,0 +1,86 @@
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.header {
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+}
+
+.headerMobile {
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.title {
+  font-weight: 500;
+  text-align: center;
+  font-size: 1.125rem;
+}
+
+.titleMobile {
+  font-size: 1rem;
+}
+
+.chartContainer {
+  width: 100%;
+  height: 350px;
+}
+
+.chartContainerMobile {
+  height: 260px;
+}
+
+.loanChart {
+  width: 100%;
+  height: 100%;
+}
+
+.loanChart :global(.recharts-cartesian-axis-tick-text) {
+  fill: var(--foreground);
+  font-size: 12px;
+}
+
+.loanChart :global(.recharts-cartesian-grid-line) {
+  stroke: var(--border);
+  opacity: 0.1;
+}
+
+.loanChart :global(.recharts-tooltip-wrapper) {
+  font-size: 12px;
+}
+
+.loanChart :global(.recharts-legend-item) {
+  font-size: 12px;
+}
+
+.loanChart :global(.recharts-bar-rectangle) {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.loanChart :global(.recharts-bar-rectangle:hover) {
+  opacity: 0.8;
+}
+
+.noData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16rem;
+}
+
+/* Mobile styles */
+@media (max-width: 640px) {
+  .loanChart :global(.recharts-cartesian-axis-tick-text) {
+    font-size: 10px;
+  }
+
+  .loanChart :global(.recharts-tooltip-wrapper) {
+    font-size: 11px;
+  }
+
+  .loanChart :global(.recharts-legend-item) {
+    font-size: 10px;
+  }
+} 

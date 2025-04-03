@@ -7,17 +7,21 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Card, CardContent } from "@/components/ui/card";
 import PaymentSearch from './PaymentSearch';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import styles from './PaymentTable.module.css';
+
 interface PaymentTableProps {
   data: PaymentDetail[];
 }
+
 const PaymentTable: React.FC<PaymentTableProps> = ({
   data
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12); // Fixed value
+  const [itemsPerPage] = useState(12);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState<PaymentDetail[]>([]);
   const isMobile = useIsMobile();
+
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredData(data);
@@ -26,48 +30,72 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
       const filtered = data.filter(item => item.period.toString().includes(term));
       setFilteredData(filtered);
     }
-    setCurrentPage(1); // Reset to first page when search changes
+    setCurrentPage(1);
   }, [searchTerm, data]);
+
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
   };
+
   if (!data || data.length === 0) {
-    return <div className="flex items-center justify-center h-64">Không có dữ liệu để hiển thị</div>;
+    return <div className={styles.noData}>Không có dữ liệu để hiển thị</div>;
   }
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+
   const goToPage = (page: number) => {
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
     setCurrentPage(page);
   };
+
   const renderPagination = () => {
     if (totalPages <= 1) return null;
-    return <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 gap-2">
-        <div className="text-xs text-muted-foreground text-center sm:text-left">
-          {isMobile ? `${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredData.length)} / ${filteredData.length}` : `Hiển thị ${startIndex + 1} đến ${Math.min(startIndex + itemsPerPage, filteredData.length)} trong tổng số ${filteredData.length} mục`}
+    return (
+      <div className={`${styles.pagination} ${isMobile ? '' : styles.paginationDesktop}`}>
+        <div className={`${styles.paginationInfo} ${isMobile ? '' : styles.paginationInfoDesktop}`}>
+          {isMobile 
+            ? `${startIndex + 1}-${Math.min(startIndex + itemsPerPage, filteredData.length)} / ${filteredData.length}`
+            : `Hiển thị ${startIndex + 1} đến ${Math.min(startIndex + itemsPerPage, filteredData.length)} trong tổng số ${filteredData.length} mục`
+          }
         </div>
-        <div className="flex items-center justify-center sm:justify-end gap-2">
-          <Button variant="outline" size="sm" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} className="h-8 w-8 p-0 sm:h-9 sm:w-9">
+        <div className={`${styles.paginationControls} ${isMobile ? '' : styles.paginationControlsDesktop}`}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => goToPage(currentPage - 1)} 
+            disabled={currentPage === 1} 
+            className="h-8 w-8 p-0 sm:h-9 sm:w-9"
+          >
             <ChevronLeftIcon className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
-          <span className="text-xs sm:text-sm">
+          <span className={`${styles.paginationPage} ${isMobile ? '' : styles.paginationPageDesktop}`}>
             {currentPage} / {totalPages}
           </span>
-          <Button variant="outline" size="sm" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} className="h-8 w-8 p-0 sm:h-9 sm:w-9">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => goToPage(currentPage + 1)} 
+            disabled={currentPage === totalPages} 
+            className="h-8 w-8 p-0 sm:h-9 sm:w-9"
+          >
             <ChevronRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
         </div>
-      </div>;
+      </div>
+    );
   };
-  return <Card className="w-full animate-fade-in">
+
+  return (
+    <Card className={styles.container}>
       <CardContent className="p-0">
-        <div className="p-2 sm:p-4 mb-2 sm:mb-4">
-          <h3 className="text-base sm:text-lg font-medium text-center">Lịch Trình Trả Nợ</h3>
-          <p className="text-xs sm:text-sm text-center text-muted-foreground">
+        <div className={isMobile ? styles.headerMobile : styles.header}>
+          <h3 className={isMobile ? styles.titleMobile : styles.title}>
+            Lịch Trình Trả Nợ
+          </h3>
+          <p className={isMobile ? styles.subtitleMobile : styles.subtitle}>
             Lịch thanh toán chi tiết cho khoản vay của bạn
           </p>
         </div>
@@ -75,39 +103,45 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
         <PaymentSearch searchTerm={searchTerm} onSearchChange={handleSearchChange} />
         
         <ScrollArea className="h-auto max-h-[60vh]">
-          <div className="border rounded-md">
+          <div className={styles.tableContainer}>
             <Table>
-              <TableHeader className="bg-muted/50 sticky top-0 z-10">
+              <TableHeader className={styles.tableHeader}>
                 <TableRow>
-                  <TableHead className="text-center w-[15%] text-xs py-1.5 px-1">Kỳ</TableHead>
-                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Thanh Toán</TableHead>
-                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Lãi</TableHead>
-                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Gốc</TableHead>
-                  <TableHead className="text-center w-[21.25%] text-xs py-1.5 px-1">Dư Nợ</TableHead>
+                  <TableHead className={styles.tableHeaderCell}>Kỳ</TableHead>
+                  <TableHead className={styles.tableHeaderCell}>Thanh Toán</TableHead>
+                  <TableHead className={styles.tableHeaderCell}>Lãi</TableHead>
+                  <TableHead className={styles.tableHeaderCell}>Gốc</TableHead>
+                  <TableHead className={styles.tableHeaderCell}>Dư Nợ</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedData.length > 0 ? paginatedData.map(item => <TableRow key={item.period} className="hover:bg-muted/30 transition-colors">
-                      <TableCell className="text-center font-medium text-xs py-1 px-0.5">
+                {paginatedData.length > 0 ? (
+                  paginatedData.map(item => (
+                    <TableRow key={item.period} className={styles.tableRow}>
+                      <TableCell className={styles.tableCell}>
                         {item.period}
                       </TableCell>
-                      <TableCell className="text-center text-xs py-1 px-0.5">
+                      <TableCell className={styles.tableCell}>
                         {formatCurrency(item.payment, isMobile)}
                       </TableCell>
-                      <TableCell className="text-center text-xs py-1 px-0.5">
+                      <TableCell className={styles.tableCell}>
                         {formatCurrency(item.interest, isMobile)}
                       </TableCell>
-                      <TableCell className="text-center text-xs py-1 px-0.5">
+                      <TableCell className={styles.tableCell}>
                         {formatCurrency(item.principal, isMobile)}
                       </TableCell>
-                      <TableCell className="text-center text-xs py-1 px-0.5">
+                      <TableCell className={styles.tableCell}>
                         {formatCurrency(item.remainingBalance, isMobile)}
                       </TableCell>
-                    </TableRow>) : <TableRow>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
                     <TableCell colSpan={5} className="text-center py-6">
                       Không tìm thấy kỳ hạn phù hợp
                     </TableCell>
-                  </TableRow>}
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>
@@ -115,6 +149,8 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
 
         {renderPagination()}
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
+
 export default PaymentTable;

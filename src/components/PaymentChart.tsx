@@ -2,9 +2,12 @@ import React, { useMemo } from 'react';
 import { PaymentDetail } from '../utils/loanCalculations';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useIsMobile } from "@/hooks/use-mobile";
+import styles from './PaymentChart.module.css';
+
 interface PaymentChartProps {
   data: PaymentDetail[];
 }
+
 const PaymentChart: React.FC<PaymentChartProps> = ({
   data
 }) => {
@@ -59,13 +62,13 @@ const PaymentChart: React.FC<PaymentChartProps> = ({
       // Simplify the period labels
       let periodLabel;
       if (totalMonths <= 12) {
-        // For loans under 1 year, show as "M1", "M2", etc.
+        // For loans under 1 year, show as "T1", "T2", etc.
         if (item.period === 1) {
           periodLabel = "Bắt Đầu";
         } else if (item.period === data.length) {
           periodLabel = "Kết Thúc";
         } else {
-          periodLabel = `Tháng ${item.period}`;
+          periodLabel = `T${item.period}`;
         }
       } else {
         // For longer loans
@@ -74,14 +77,14 @@ const PaymentChart: React.FC<PaymentChartProps> = ({
         } else if (item.period === data.length) {
           periodLabel = "Kết Thúc";
         } else if (item.period % 12 === 0) {
-          periodLabel = `Năm ${item.period / 12}`;
+          periodLabel = `N${item.period / 12}`;
         } else {
           const year = Math.floor(item.period / 12);
           const month = item.period % 12;
           if (year === 0) {
-            periodLabel = `Tháng ${month}`;
+            periodLabel = `T${month}`;
           } else {
-            periodLabel = `Năm ${year + 1}`;
+            periodLabel = `N${year + 1}`;
           }
         }
       }
@@ -99,64 +102,99 @@ const PaymentChart: React.FC<PaymentChartProps> = ({
     interest: '#93c5fd' // Light blue
   };
   if (!data || data.length === 0) {
-    return <div className="flex items-center justify-center h-64">No data to display</div>;
+    return <div className={styles.noData}>No data to display</div>;
   }
-  return <div className="w-full h-full animate-fade-in">
-      <div className={`${isMobile ? 'p-2 mb-1' : 'p-4 mb-2'}`}>
-        <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-medium text-center`}>Biểu đồ thanh toán
-      </h3>
+  return <div className={styles.container}>
+      <div className={isMobile ? styles.headerMobile : styles.header}>
+        <h3 className={isMobile ? styles.titleMobile : styles.title}>
+          Biểu đồ thanh toán
+        </h3>
       </div>
       
-      <div className={`w-full ${isMobile ? 'h-[260px]' : 'h-[350px]'}`}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={isMobile ? {
-          top: 10,
-          right: 5,
-          left: 0,
-          bottom: 40
-        } : {
-          top: 20,
-          right: 30,
-          left: 20,
-          bottom: 50
-        }} barGap={0} barCategoryGap={isMobile ? "10%" : "20%"}>
-            <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-            <XAxis dataKey="period" tick={{
-            fontSize: isMobile ? 10 : 12
-          }} height={isMobile ? 30 : 40} interval={isMobile ? 0 : 'preserveStartEnd'} tickMargin={isMobile ? 5 : 10} />
-            <YAxis width={isMobile ? 35 : 45} tick={{
-            fontSize: isMobile ? 10 : 12
-          }} tickFormatter={value => {
-            if (isMobile) {
-              // Simplify Y-axis formatting on mobile
-              if (value >= 1000) {
-                return `${(value / 1000).toFixed(0)}K`;
-              }
-              return value;
-            }
-            return value;
-          }} />
-            <Tooltip formatter={(value, name) => {
-            const label = name === "Principal" ? "Gốc" : "Lãi";
-            return [`$${value.toLocaleString()}`, label];
-          }} contentStyle={{
-            borderRadius: 8,
-            border: 'none',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            padding: isMobile ? '4px 8px' : '8px 12px',
-            fontSize: isMobile ? '11px' : '12px'
-          }} wrapperStyle={{
-            fontSize: isMobile ? '11px' : '12px'
-          }} />
-            <Legend wrapperStyle={{
-            fontSize: isMobile ? '10px' : '12px',
-            paddingTop: isMobile ? '5px' : '10px'
-          }} />
-            <Bar name="Gốc" dataKey="principal" stackId="a" fill={COLORS.principal} radius={[4, 4, 0, 0]} />
-            <Bar name="Lãi" dataKey="interest" stackId="a" fill={COLORS.interest} radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className={isMobile ? styles.chartContainerMobile : styles.chartContainer}>
+        <div className={styles.loanChart}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart 
+              data={chartData} 
+              margin={isMobile ? {
+                top: 10,
+                right: 5,
+                left: 0,
+                bottom: 40
+              } : {
+                top: 20,
+                right: 30,
+                left: 20,
+                bottom: 50
+              }} 
+              barGap={0} 
+              barCategoryGap={isMobile ? "10%" : "20%"}
+            >
+              <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+              <XAxis 
+                dataKey="period" 
+                tick={{
+                  fontSize: isMobile ? 10 : 12
+                }} 
+                height={isMobile ? 30 : 40} 
+                interval={isMobile ? 0 : 'preserveStartEnd'} 
+                tickMargin={isMobile ? 5 : 10}
+              />
+              <YAxis 
+                width={isMobile ? 35 : 45} 
+                tick={{
+                  fontSize: isMobile ? 10 : 12
+                }} 
+                tickFormatter={value => {
+                  if (isMobile) {
+                    if (value >= 1000) {
+                      return `${(value / 1000).toFixed(0)}K`;
+                    }
+                    return value;
+                  }
+                  return value;
+                }}
+              />
+              <Tooltip 
+                formatter={(value, name) => {
+                  const label = name === "Principal" ? "Gốc" : "Lãi";
+                  return [`$${value.toLocaleString()}`, label];
+                }} 
+                contentStyle={{
+                  borderRadius: 8,
+                  border: 'none',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  padding: isMobile ? '4px 8px' : '8px 12px',
+                  fontSize: isMobile ? '11px' : '12px'
+                }} 
+                wrapperStyle={{
+                  fontSize: isMobile ? '11px' : '12px'
+                }}
+              />
+              <Legend 
+                wrapperStyle={{
+                  fontSize: isMobile ? '10px' : '12px',
+                  paddingTop: isMobile ? '5px' : '10px'
+                }}
+              />
+              <Bar 
+                name="Gốc" 
+                dataKey="principal" 
+                stackId="a" 
+                fill={COLORS.principal} 
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar 
+                name="Lãi" 
+                dataKey="interest" 
+                stackId="a" 
+                fill={COLORS.interest} 
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>;
 };
