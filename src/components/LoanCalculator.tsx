@@ -113,14 +113,14 @@ const LoanCalculator: React.FC = () => {
 
   // Reset all inputs
   const resetCalculator = () => {
-    setLoanAmount(300000000);
-    setInterestRate(5.5);
-    setLoanTermMonths(360); // 30 years in months
+    setLoanAmount(0);
+    setInterestRate(0);
+    setLoanTermMonths(0);
     setLoanType('evenDistribution');
     setResults(null);
     toast({
       title: "Đặt lại máy tính",
-      description: "Tất cả các giá trị đã được đặt lại về mặc định."
+      description: "Tất cả các giá trị đã được xóa."
     });
   };
 
