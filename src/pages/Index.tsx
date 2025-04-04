@@ -28,7 +28,7 @@ const Index = () => {
           <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">Tính toán khoản lãi suất khoản vay và lịch trình thanh toán </p>
           
           {!isMobile && <div className="flex flex-wrap justify-center gap-3 mt-6">
-              {categories.map((category, index) => <CategoryPill key={index} text={category.text} bgColor={category.bgColor} textColor={category.textColor} />)}
+              
             </div>}
         </div>
         
